@@ -153,3 +153,17 @@ textarea {
     padding: 25px 20px;
   }
 }
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.85rem;
+}
+
+.footer strong {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+} 
