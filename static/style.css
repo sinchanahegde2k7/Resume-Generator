@@ -43,14 +43,14 @@ body {
 
 /* ── Sections ── */
 .section {
-  padding: 30px 40px;
+  padding: 28px 40px;
   border-bottom: 2px solid #f0f0f0;
 }
 
 .section h2 {
   font-size: 1.2rem;
   color: #667eea;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   padding-bottom: 8px;
   border-bottom: 2px solid #667eea33;
 }
@@ -67,6 +67,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  margin-bottom: 12px;
 }
 
 .form-group label {
@@ -78,8 +79,10 @@ body {
 }
 
 .form-group input,
-.form-group textarea {
-  padding: 12px 15px;
+.form-group textarea,
+.dynamic-item input,
+.dynamic-item textarea {
+  padding: 11px 15px;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
   font-size: 0.95rem;
@@ -88,22 +91,175 @@ body {
   outline: none;
   width: 100%;
   font-family: inherit;
+  margin-bottom: 8px;
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.dynamic-item input:focus,
+.dynamic-item textarea:focus {
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }
 
 .form-group input::placeholder,
-.form-group textarea::placeholder {
+.form-group textarea::placeholder,
+.dynamic-item input::placeholder,
+.dynamic-item textarea::placeholder {
   color: #aaa;
   font-size: 0.88rem;
 }
 
 textarea {
   resize: vertical;
+}
+
+/* ── Skill Tag System ── */
+.tag-input-container {
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fafafa;
+  transition: border-color 0.3s;
+}
+
+.tag-input-container:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.tag-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+  min-height: 10px;
+}
+
+.tag {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.tag button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.tag button:hover {
+  opacity: 1;
+}
+
+.tag-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tag-input-row input {
+  flex: 1;
+  border: 2px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 0.9rem !important;
+  margin-bottom: 0 !important;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ── Dynamic Items (Projects & Internships) ── */
+.dynamic-item {
+  background: #f8f9ff;
+  border: 2px solid #e8ebff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  transition: border-color 0.3s;
+}
+
+.dynamic-item:hover {
+  border-color: #667eea;
+}
+
+.dynamic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.dynamic-header label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.remove-btn {
+  background: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.remove-btn:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+}
+
+/* ── Add More Button ── */
+.add-more-btn {
+  background: white;
+  color: #667eea;
+  border: 2px dashed #667eea;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-top: 4px;
+}
+
+.add-more-btn:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
 }
 
 /* ── Submit Button ── */
@@ -135,7 +291,21 @@ textarea {
   transform: translateY(0px);
 }
 
-/* ── Responsive for Mobile ── */
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.85rem;
+}
+
+.footer strong {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ── Responsive Mobile ── */
 @media (max-width: 600px) {
   .grid {
     grid-template-columns: 1fr;
@@ -152,18 +322,12 @@ textarea {
   .submit-area {
     padding: 25px 20px;
   }
-}
 
-/* ── Footer ── */
-.footer {
-  text-align: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-size: 0.85rem;
-}
+  .tag-input-row {
+    flex-direction: column;
+  }
 
-.footer strong {
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  .add-btn {
+    width: 100%;
+  }
 } 

@@ -8,134 +8,283 @@
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <!-- Header -->
-    <div class="header">
-      <h1>🎓 AI Resume Generator</h1>
-      <p>Fill in your details and let AI build your professional resume!</p>
+  <!-- Header -->
+  <div class="header">
+    <h1>🎓 AI Resume Generator</h1>
+    <p>Fill in your details and let AI build your professional resume!</p>
+  </div>
+
+  <form action="/generate" method="POST" id="resumeForm">
+
+    <!-- Personal Info -->
+    <div class="section">
+      <h2>👤 Personal Information</h2>
+      <div class="grid">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" name="name" placeholder="e.g. Sinchana Hegde" required/>
+        </div>
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" name="email" placeholder="e.g. sinchana@gmail.com" required/>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" name="phone" placeholder="e.g. 9876543210"/>
+        </div>
+        <div class="form-group">
+          <label>City, State</label>
+          <input type="text" name="location" placeholder="e.g. Belagavi, Karnataka"/>
+        </div>
+        <div class="form-group">
+          <label>LinkedIn URL (optional)</label>
+          <input type="text" name="linkedin" placeholder="linkedin.com/in/yourname"/>
+        </div>
+        <div class="form-group">
+          <label>GitHub URL (optional)</label>
+          <input type="text" name="github" placeholder="github.com/yourusername"/>
+        </div>
+      </div>
     </div>
 
-    <!-- Form -->
-    <form action="/generate" method="POST">
-
-      <!-- Personal Info -->
-      <div class="section">
-        <h2>👤 Personal Information</h2>
-        <div class="grid">
-          <div class="form-group">
-            <label>Full Name *</label>
-            <input type="text" name="name" placeholder="e.g. Rahul Sharma" required/>
-          </div>
-          <div class="form-group">
-            <label>Email Address *</label>
-            <input type="email" name="email" placeholder="e.g. rahul@gmail.com" required/>
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="text" name="phone" placeholder="e.g. 9876543210"/>
-          </div>
-          <div class="form-group">
-            <label>City, State</label>
-            <input type="text" name="location" placeholder="e.g. Chennai, Tamil Nadu"/>
-          </div>
-          <div class="form-group">
-            <label>LinkedIn URL (optional)</label>
-            <input type="text" name="linkedin" placeholder="linkedin.com/in/yourname"/>
-          </div>
-        </div>
-      </div>
-
-      <!-- Education -->
-      <div class="section">
-        <h2>🏫 Education</h2>
-        <div class="grid">
-          <div class="form-group">
-            <label>Degree *</label>
-            <input type="text" name="degree" placeholder="e.g. B.Tech Computer Science" required/>
-          </div>
-          <div class="form-group">
-            <label>College / University *</label>
-            <input type="text" name="college" placeholder="e.g. Anna University" required/>
-          </div>
-          <div class="form-group">
-            <label>Graduation Year</label>
-            <input type="text" name="grad_year" placeholder="e.g. 2026"/>
-          </div>
-          <div class="form-group">
-            <label>Percentage / CGPA</label>
-            <input type="text" name="percentage" placeholder="e.g. 8.5 CGPA"/>
-          </div>
-        </div>
-      </div>
-
-      <!-- Skills -->
-      <div class="section">
-        <h2>💻 Skills</h2>
+    <!-- Education -->
+    <div class="section">
+      <h2>🏫 Education</h2>
+      <div class="grid">
         <div class="form-group">
-          <label>Your Skills (comma separated)</label>
-          <input type="text" name="skills"
-            placeholder="e.g. Python, MS Excel, Communication, Teamwork"/>
-        </div>
-      </div>
-
-      <!-- Projects -->
-      <div class="section">
-        <h2>🛠️ Projects</h2>
-        <div class="form-group">
-          <label>Project 1 (name + what it does) *</label>
-          <textarea name="project1" rows="3"
-            placeholder="e.g. Resume Generator — AI tool that creates resumes using Python and Gemini API"
-            required></textarea>
+          <label>Degree *</label>
+          <input type="text" name="degree" placeholder="e.g. B.Tech Computer Science" required/>
         </div>
         <div class="form-group">
-          <label>Project 2 (optional)</label>
-          <textarea name="project2" rows="3"
-            placeholder="e.g. Weather App — fetches live weather using OpenWeather API"></textarea>
+          <label>College / University *</label>
+          <input type="text" name="college" placeholder="e.g. KLE Technological University" required/>
         </div>
-      </div>
-
-      <!-- Experience -->
-      <div class="section">
-        <h2>💼 Internship / Experience</h2>
         <div class="form-group">
-          <label>Internship or Work Experience (leave blank if none)</label>
-          <textarea name="experience" rows="3"
-            placeholder="e.g. Web Development Intern at XYZ Company, June 2024"></textarea>
+          <label>Graduation Year</label>
+          <input type="text" name="grad_year" placeholder="e.g. 2026"/>
         </div>
-      </div>
-
-      <!-- Achievements -->
-      <div class="section">
-        <h2>🏆 Achievements & Activities</h2>
         <div class="form-group">
-          <label>Certifications, Clubs, Awards</label>
-          <textarea name="achievements" rows="3"
-            placeholder="e.g. Google Python Certificate, NSS Volunteer, Hackathon Winner"></textarea>
+          <label>Percentage / CGPA</label>
+          <input type="text" name="percentage" placeholder="e.g. 8.5 CGPA"/>
         </div>
       </div>
+    </div>
 
-      <!-- Job Target -->
-      <div class="section">
-        <h2>🎯 Job Target</h2>
-        <div class="form-group">
-          <label>Role you are applying for *</label>
-          <input type="text" name="job_role"
-            placeholder="e.g. Python Developer Intern" required/>
+    <!-- Skills -->
+    <div class="section">
+      <h2>💻 Skills</h2>
+      <div class="form-group">
+        <label>Add Skills</label>
+        <div class="tag-input-container">
+          <div id="skillTags" class="tag-box"></div>
+          <div class="tag-input-row">
+            <input type="text" id="skillInput" placeholder="Type a skill and press ➕"/>
+            <button type="button" class="add-btn" onclick="addSkill()">➕</button>
+          </div>
+        </div>
+        <!-- Hidden input to store skills -->
+        <input type="hidden" name="skills" id="skillsHidden"/>
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <div class="section">
+      <h2>🛠️ Projects</h2>
+      <div id="projectsContainer">
+        <div class="dynamic-item" id="project_1">
+          <div class="dynamic-header">
+            <label>Project 1 *</label>
+          </div>
+          <input type="text" name="project_title[]"
+            placeholder="Project Name e.g. Resume Generator" required/>
+          <textarea name="project_desc[]" rows="2"
+            placeholder="What does it do? e.g. AI tool that creates resumes using Python"></textarea>
         </div>
       </div>
+      <button type="button" class="add-more-btn" onclick="addProject()">
+        ➕ Add Another Project
+      </button>
+    </div>
 
-      <!-- Submit -->
-      <div class="submit-area">
-        <button type="submit">⚡ Generate My Resume (PDF)</button>
+    <!-- Internships -->
+    <div class="section">
+      <h2>💼 Internship / Experience</h2>
+      <div id="internshipContainer">
+        <div class="dynamic-item" id="internship_1">
+          <div class="dynamic-header">
+            <label>Internship 1</label>
+          </div>
+          <input type="text" name="internship_company[]"
+            placeholder="Company Name e.g. XYZ Tech"/>
+          <input type="text" name="internship_role[]"
+            placeholder="Role e.g. Web Development Intern"/>
+          <input type="text" name="internship_duration[]"
+            placeholder="Duration e.g. June 2024 - August 2024"/>
+          <textarea name="internship_desc[]" rows="2"
+            placeholder="What did you do there?"></textarea>
+        </div>
       </div>
+      <button type="button" class="add-more-btn" onclick="addInternship()">
+        ➕ Add Another Internship
+      </button>
+    </div>
 
-    </form>
-  </div>
+    <!-- Achievements -->
+    <div class="section">
+      <h2>🏆 Achievements & Activities</h2>
+      <div class="form-group">
+        <label>Certifications, Clubs, Awards</label>
+        <textarea name="achievements" rows="3"
+          placeholder="e.g. Google Python Certificate, NSS Volunteer, Hackathon Winner"></textarea>
+      </div>
+    </div>
+
+    <!-- Extra Section -->
+    <div class="section">
+      <h2>✨ Anything Extra</h2>
+      <div class="form-group">
+        <label>Additional Information (optional)</label>
+        <textarea name="extra" rows="3"
+          placeholder="e.g. Languages known, hobbies, volunteer work, publications, or anything else you want on your resume!"></textarea>
+      </div>
+    </div>
+
+    <!-- Job Target -->
+    <div class="section">
+      <h2>🎯 Job Target</h2>
+      <div class="form-group">
+        <label>Role you are applying for *</label>
+        <input type="text" name="job_role"
+          placeholder="e.g. Python Developer Intern" required/>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-area">
+      <button type="submit" onclick="prepareSubmit()">
+        ⚡ Generate My Resume (PDF)
+      </button>
+    </div>
+
+  </form>
+
   <!-- Footer -->
   <div class="footer">
-     <p>Built with ❤️ by <strong>Sinchana Hegde</strong></p>
-     <p>AI Resume Generator © 2026 | Powered by Groq AI & Flask</p>
+    <p>Built with ❤️ by <strong>Sinchana Hegde</strong></p>
+    <p>AI Resume Generator © 2026 | Powered by Groq AI & Flask</p>
   </div>
+
+</div>
+
+<script>
+  // ── SKILLS TAG SYSTEM ──
+  let skills = [];
+
+  function addSkill() {
+    const input = document.getElementById('skillInput');
+    const skill = input.value.trim();
+    if (!skill) return;
+    if (skills.includes(skill)) {
+      input.value = '';
+      return;
+    }
+    skills.push(skill);
+    renderSkillTags();
+    input.value = '';
+    updateSkillsHidden();
+  }
+
+  function removeSkill(skill) {
+    skills = skills.filter(s => s !== skill);
+    renderSkillTags();
+    updateSkillsHidden();
+  }
+
+  function renderSkillTags() {
+    const box = document.getElementById('skillTags');
+    box.innerHTML = skills.map(skill => `
+      <span class="tag">
+        ${skill}
+        <button type="button" onclick="removeSkill('${skill}')">&times;</button>
+      </span>
+    `).join('');
+  }
+
+  function updateSkillsHidden() {
+    document.getElementById('skillsHidden').value = skills.join(', ');
+  }
+
+  // Allow Enter key to add skill
+  document.getElementById('skillInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addSkill();
+    }
+  });
+
+  // ── DYNAMIC PROJECTS ──
+  let projectCount = 1;
+
+  function addProject() {
+    projectCount++;
+    const container = document.getElementById('projectsContainer');
+    const div = document.createElement('div');
+    div.className = 'dynamic-item';
+    div.id = `project_${projectCount}`;
+    div.innerHTML = `
+      <div class="dynamic-header">
+        <label>Project ${projectCount}</label>
+        <button type="button" class="remove-btn"
+          onclick="removeItem('project_${projectCount}')">✖ Remove</button>
+      </div>
+      <input type="text" name="project_title[]"
+        placeholder="Project Name"/>
+      <textarea name="project_desc[]" rows="2"
+        placeholder="What does it do?"></textarea>
+    `;
+    container.appendChild(div);
+  }
+
+  // ── DYNAMIC INTERNSHIPS ──
+  let internshipCount = 1;
+
+  function addInternship() {
+    internshipCount++;
+    const container = document.getElementById('internshipContainer');
+    const div = document.createElement('div');
+    div.className = 'dynamic-item';
+    div.id = `internship_${internshipCount}`;
+    div.innerHTML = `
+      <div class="dynamic-header">
+        <label>Internship ${internshipCount}</label>
+        <button type="button" class="remove-btn"
+          onclick="removeItem('internship_${internshipCount}')">✖ Remove</button>
+      </div>
+      <input type="text" name="internship_company[]"
+        placeholder="Company Name"/>
+      <input type="text" name="internship_role[]"
+        placeholder="Role"/>
+      <input type="text" name="internship_duration[]"
+        placeholder="Duration e.g. June - August 2024"/>
+      <textarea name="internship_desc[]" rows="2"
+        placeholder="What did you do there?"></textarea>
+    `;
+    container.appendChild(div);
+  }
+
+  // ── REMOVE ANY DYNAMIC ITEM ──
+  function removeItem(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  // ── PREPARE SUBMIT ──
+  function prepareSubmit() {
+    updateSkillsHidden();
+  }
+</script>
+
 </body>
-</html> 
+</html>
