@@ -22,20 +22,24 @@ def generate():
 
     # ── Personal Info ──
     student_data = {
-        "name"        : request.form.get("name", "").strip(),
-        "email"       : request.form.get("email", "").strip(),
-        "phone"       : request.form.get("phone", "").strip(),
-        "location"    : request.form.get("location", "").strip(),
-        "linkedin"    : request.form.get("linkedin", "").strip(),
-        "github"      : request.form.get("github", "").strip(),
-        "degree"      : request.form.get("degree", "").strip(),
-        "college"     : request.form.get("college", "").strip(),
-        "grad_year"   : request.form.get("grad_year", "").strip(),
-        "percentage"  : request.form.get("percentage", "").strip(),
-        "skills"      : request.form.get("skills", "").strip(),
-        "achievements": request.form.get("achievements", "").strip(),
-        "extra"       : request.form.get("extra", "").strip(),
-        "job_role"    : request.form.get("job_role", "").strip(),
+        "name"         : request.form.get("name", "").strip(),
+        "email"        : request.form.get("email", "").strip(),
+        "phone"        : request.form.get("phone", "").strip(),
+        "location"     : request.form.get("location", "").strip(),
+        "linkedin"     : request.form.get("linkedin", "").strip(),
+        "github"       : request.form.get("github", "").strip(),
+        "degree"       : request.form.get("degree", "").strip(),
+        "college"      : request.form.get("college", "").strip(),
+        "grad_year"    : request.form.get("grad_year", "").strip(),
+        "percentage"   : request.form.get("percentage", "").strip(),
+        "pg_degree"    : request.form.get("pg_degree", "").strip(),
+        "pg_college"   : request.form.get("pg_college", "").strip(),
+        "pg_year"      : request.form.get("pg_year", "").strip(),
+        "pg_percentage": request.form.get("pg_percentage", "").strip(),
+        "skills"       : request.form.get("skills", "").strip(),
+        "achievements" : request.form.get("achievements", "").strip(),
+        "extra"        : request.form.get("extra", "").strip(),
+        "job_roles"    : request.form.get("job_roles", "").strip(),
     }
 
     # ── Dynamic Projects ──
@@ -53,10 +57,10 @@ def generate():
     student_data["projects"] = projects
 
     # ── Dynamic Internships ──
-    internship_companies  = request.form.getlist("internship_company[]")
-    internship_roles      = request.form.getlist("internship_role[]")
-    internship_durations  = request.form.getlist("internship_duration[]")
-    internship_descs      = request.form.getlist("internship_desc[]")
+    internship_companies = request.form.getlist("internship_company[]")
+    internship_roles     = request.form.getlist("internship_role[]")
+    internship_durations = request.form.getlist("internship_duration[]")
+    internship_descs     = request.form.getlist("internship_desc[]")
     internships = []
     for company, role, duration, desc in zip(
         internship_companies,
@@ -82,7 +86,7 @@ def generate():
         return """
             <h2 style='color:red; font-family:sans-serif;
             text-align:center; margin-top:50px;'>
-            ❌ AI generation failed. Please check your API key and try again.
+            ❌ AI generation failed. Please check your API key.
             </h2>
         """, 500
 
@@ -109,4 +113,4 @@ if __name__ == "__main__":
     print("🚀 Starting AI Resume Generator...")
     print("🌐 Open: http://127.0.0.1:5000")
     print("⏹️  Press CTRL+C to stop\n")
-    app.run(debug=True)
+    app.run(debug=True) 

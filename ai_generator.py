@@ -27,10 +27,20 @@ def generate_resume_content(data):
     Details : {intern.get('desc', '')}
     """
 
+    # ── Format PG ──
+    pg_text = ""
+    if data.get("pg_degree"):
+        pg_text = f"""
+    PG Degree  : {data.get('pg_degree')}
+    PG College : {data.get('pg_college')}
+    PG Year    : {data.get('pg_year')}
+    PG CGPA    : {data.get('pg_percentage')}
+    """
+
     # ── Build Prompt ──
     prompt = f"""
     You are a professional resume writer for students.
-    Based on the student details below, generate polished resume content.
+    Generate polished resume content based on the details below.
 
     ── STUDENT DETAILS ──
     Name         : {data.get('name')}
@@ -43,10 +53,11 @@ def generate_resume_content(data):
     College      : {data.get('college')}
     Grad Year    : {data.get('grad_year')}
     CGPA         : {data.get('percentage')}
+    {f"Post Graduation: {pg_text}" if pg_text else ""}
     Skills       : {data.get('skills')}
     Achievements : {data.get('achievements')}
     Extra Info   : {data.get('extra')}
-    Job Target   : {data.get('job_role')}
+    Job Targets  : {data.get('job_roles')}
 
     ── PROJECTS ──
     {projects_text if projects_text else "No projects provided"}
@@ -55,11 +66,10 @@ def generate_resume_content(data):
     {internships_text if internships_text else "No internships provided"}
 
     ── WHAT TO GENERATE ──
-    Generate these sections professionally:
 
     1. PROFESSIONAL SUMMARY
-       - 3-4 sentences tailored to the job role
-       - Highlight their strongest points
+       - 3-4 sentences tailored to ALL job roles they are targeting
+       - Highlight strongest points
 
     2. SKILLS
        - Clean comma separated list
@@ -73,7 +83,7 @@ def generate_resume_content(data):
     4. INTERNSHIPS
        - For EACH internship write 2-3 bullet points
        - Use action verbs
-       - Separate each internship with [INTERN_BREAK]
+       - Separate each with [INTERN_BREAK]
        - Write NONE if no internships
 
     5. ACHIEVEMENTS
@@ -81,7 +91,7 @@ def generate_resume_content(data):
        - Professional language
 
     6. EXTRA SECTION
-       - Polish whatever extra info was provided
+       - Polish the extra info provided
        - Write NONE if nothing provided
 
     ── STRICT RULES ──
@@ -95,13 +105,13 @@ def generate_resume_content(data):
     ---SECTION---
     [Skills]
     ---SECTION---
-    [Projects - separated by PROJECT_BREAK]
+    [Projects]
     ---SECTION---
-    [Internships - separated by INTERN_BREAK]
+    [Internships]
     ---SECTION---
     [Achievements]
     ---SECTION---
-    [Extra Section]
+    [Extra]
     """
 
     try:
@@ -110,7 +120,7 @@ def generate_resume_content(data):
             messages=[
                 {
                     "role"   : "system",
-                    "content": "You are a professional resume writer. Always follow the exact output format given. Never add extra text outside the format."
+                    "content": "You are a professional resume writer. Always follow the exact output format. Never add extra text outside the format."
                 },
                 {
                     "role"   : "user",
@@ -143,16 +153,16 @@ def generate_resume_content(data):
                     internship_descriptions.append(block)
 
         result = {
-            "summary"                 : sections[0] if len(sections) > 0 else "",
-            "skills"                  : sections[1] if len(sections) > 1 else "",
-            "project_descriptions"    : project_descriptions,
-            "internship_descriptions" : internship_descriptions,
-            "achievements"            : sections[4] if len(sections) > 4 else "",
-            "extra"                   : sections[5] if len(sections) > 5 else "",
+            "summary"                : sections[0] if len(sections) > 0 else "",
+            "skills"                 : sections[1] if len(sections) > 1 else "",
+            "project_descriptions"   : project_descriptions,
+            "internship_descriptions": internship_descriptions,
+            "achievements"           : sections[4] if len(sections) > 4 else "",
+            "extra"                  : sections[5] if len(sections) > 5 else "",
         }
 
         return result
 
     except Exception as e:
         print(f"AI Error: {e}")
-        return None
+        return None 

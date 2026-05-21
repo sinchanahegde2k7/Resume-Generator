@@ -11,13 +11,11 @@ from reportlab.lib.enums import TA_LEFT, TA_CENTER
 import os
 
 # ── Colors ──
-PURPLE      = colors.HexColor("#5C6BC0")
-DARK_PURPLE = colors.HexColor("#3949AB")
-DARK_GRAY   = colors.HexColor("#212121")
-MED_GRAY    = colors.HexColor("#616161")
-LIGHT_GRAY  = colors.HexColor("#F5F5F5")
-ACCENT      = colors.HexColor("#E8EAF6")
-WHITE       = colors.white
+PURPLE     = colors.HexColor("#5C6BC0")
+DARK_GRAY  = colors.HexColor("#212121")
+MED_GRAY   = colors.HexColor("#616161")
+ACCENT     = colors.HexColor("#E8EAF6")
+WHITE      = colors.white
 
 
 def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
@@ -38,8 +36,6 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
         textColor=WHITE,
         alignment=TA_CENTER,
         fontName="Helvetica-Bold",
-        spaceAfter=0,
-        spaceBefore=0,
     )
 
     contact_style = ParagraphStyle(
@@ -48,7 +44,6 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
         textColor=WHITE,
         alignment=TA_CENTER,
         fontName="Helvetica",
-        spaceAfter=0,
         spaceBefore=2,
     )
 
@@ -150,7 +145,6 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
         contact_parts.append(student_data["location"])
     contact_line = "   |   ".join(contact_parts)
 
-    # Links line
     links_parts = []
     if student_data.get("linkedin"):
         links_parts.append(f"LinkedIn: {student_data['linkedin']}")
@@ -188,23 +182,23 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
 
     # Professional Summary
     left += section_title("Professional Summary")
-    summary = ai_content.get("summary", "").strip()
+    summary = ai_content.get("summary", "").strip().replace("**", "")
     if summary:
-        summary = summary.replace("**", "")
         left.append(Paragraph(summary, body_style))
     left.append(Spacer(1, 4))
 
     # Projects
     projects      = student_data.get("projects", [])
     project_descs = ai_content.get("project_descriptions", [])
-
     if projects:
         left += section_title("Projects")
         for i, project in enumerate(projects):
             left.append(
-                Paragraph(f"<b>{project.get('title', '')}</b>", label_style)
+                Paragraph(
+                    f"<b>{project.get('title', '')}</b>",
+                    label_style
+                )
             )
-            # Get matching AI description
             if i < len(project_descs):
                 left += format_bullets(project_descs[i])
             elif project.get("desc"):
@@ -214,23 +208,20 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
     # Internships
     internships      = student_data.get("internships", [])
     internship_descs = ai_content.get("internship_descriptions", [])
-
     if internships:
         left += section_title("Internship / Experience")
         for i, intern in enumerate(internships):
-            # Company & Role
             company  = intern.get("company", "")
             role     = intern.get("role", "")
             duration = intern.get("duration", "")
-
             left.append(
-                Paragraph(f"<b>{role}</b> — {company}", label_style)
+                Paragraph(
+                    f"<b>{role}</b> — {company}",
+                    label_style
+                )
             )
             if duration:
-                left.append(
-                    Paragraph(duration, sub_label_style)
-                )
-            # AI description
+                left.append(Paragraph(duration, sub_label_style))
             if i < len(internship_descs):
                 left += format_bullets(internship_descs[i])
             elif intern.get("desc"):
@@ -238,28 +229,30 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
             left.append(Spacer(1, 4))
 
     # Extra Section
-    extra     = student_data.get("extra", "").strip()
-    extra_ai  = ai_content.get("extra", "").strip()
+    extra    = student_data.get("extra", "").strip()
+    extra_ai = ai_content.get("extra", "").strip()
     if extra and extra_ai.upper() != "NONE" and extra_ai:
         left += section_title("Additional Information")
         left += format_bullets(extra_ai)
         left.append(Spacer(1, 4))
 
-    # ── RIGHT COLUMN (Sidebar) ──
+    # ── RIGHT COLUMN ──
     right = []
 
-    # Education
+    # Education — Graduation
     right.append(Paragraph("EDUCATION", side_heading))
     right.append(HRFlowable(
         width="100%", thickness=1,
         color=PURPLE, spaceAfter=4
     ))
-    degree  = student_data.get("degree", "")
-    college = student_data.get("college", "")
-    if degree:
-        right.append(Paragraph(f"<b>{degree}</b>", side_body))
-    if college:
-        right.append(Paragraph(college, side_body))
+    if student_data.get("degree"):
+        right.append(
+            Paragraph(
+                f"<b>{student_data['degree']}</b>", side_body
+            )
+        )
+    if student_data.get("college"):
+        right.append(Paragraph(student_data["college"], side_body))
     if student_data.get("grad_year"):
         right.append(
             Paragraph(
@@ -272,6 +265,35 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
                 f"CGPA: {student_data['percentage']}", side_body
             )
         )
+
+    # Post Graduation
+    if student_data.get("pg_degree"):
+        right.append(Spacer(1, 6))
+        right.append(
+            Paragraph("<b>Post Graduation</b>", side_body)
+        )
+        right.append(
+            Paragraph(
+                f"<b>{student_data['pg_degree']}</b>", side_body
+            )
+        )
+        if student_data.get("pg_college"):
+            right.append(
+                Paragraph(student_data["pg_college"], side_body)
+            )
+        if student_data.get("pg_year"):
+            right.append(
+                Paragraph(
+                    f"Graduating: {student_data['pg_year']}", side_body
+                )
+            )
+        if student_data.get("pg_percentage"):
+            right.append(
+                Paragraph(
+                    f"CGPA: {student_data['pg_percentage']}", side_body
+                )
+            )
+
     right.append(Spacer(1, 6))
 
     # Skills
@@ -282,11 +304,7 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
     ))
     skills = ai_content.get("skills", "").strip()
     if skills:
-        skill_list = [
-            s.strip()
-            for s in skills.replace(";", ",").split(",")
-        ]
-        for skill in skill_list:
+        for skill in skills.replace(";", ",").split(","):
             skill = skill.replace("**", "").strip()
             if skill:
                 right.append(Paragraph(f"▸ {skill}", side_body))
@@ -303,15 +321,14 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
         ))
         if ach_ai:
             for line in ach_ai.strip().split("\n"):
-                line = line.strip().lstrip("•*-– ").strip()
-                line = line.replace("**", "")
+                line = line.strip().lstrip("•*-– ").replace("**","").strip()
                 if line:
                     right.append(Paragraph(f"▸ {line}", side_body))
         else:
             right.append(Paragraph(f"▸ {ach_raw}", side_body))
         right.append(Spacer(1, 6))
 
-    # GitHub on Sidebar
+    # GitHub
     github = student_data.get("github", "").strip()
     if github:
         right.append(Paragraph("GITHUB", side_heading))
@@ -320,6 +337,20 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
             color=PURPLE, spaceAfter=4
         ))
         right.append(Paragraph(f"▸ {github}", side_body))
+        right.append(Spacer(1, 6))
+
+    # Job Targets
+    job_roles = student_data.get("job_roles", "").strip()
+    if job_roles:
+        right.append(Paragraph("JOB TARGETS", side_heading))
+        right.append(HRFlowable(
+            width="100%", thickness=1,
+            color=PURPLE, spaceAfter=4
+        ))
+        for role in job_roles.split(","):
+            role = role.strip()
+            if role:
+                right.append(Paragraph(f"▸ {role}", side_body))
         right.append(Spacer(1, 6))
 
     # ── PAD COLUMNS ──
@@ -344,6 +375,5 @@ def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
     ]))
     story.append(two_col)
 
-    # ── BUILD PDF ──
     doc.build(story)
     return output_path 

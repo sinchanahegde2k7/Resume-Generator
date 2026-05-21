@@ -52,24 +52,65 @@
     <!-- Education -->
     <div class="section">
       <h2>🏫 Education</h2>
-      <div class="grid">
-        <div class="form-group">
-          <label>Degree *</label>
-          <input type="text" name="degree" placeholder="e.g. B.Tech Computer Science" required/>
-        </div>
-        <div class="form-group">
-          <label>College / University *</label>
-          <input type="text" name="college" placeholder="e.g. KLE Technological University" required/>
-        </div>
-        <div class="form-group">
-          <label>Graduation Year</label>
-          <input type="text" name="grad_year" placeholder="e.g. 2026"/>
-        </div>
-        <div class="form-group">
-          <label>Percentage / CGPA</label>
-          <input type="text" name="percentage" placeholder="e.g. 8.5 CGPA"/>
+
+      <!-- Graduation -->
+      <div class="edu-block">
+        <div class="edu-block-title">🎓 Graduation</div>
+        <div class="grid">
+          <div class="form-group">
+            <label>Degree *</label>
+            <input type="text" name="degree"
+              placeholder="e.g. B.Tech Computer Science" required/>
+          </div>
+          <div class="form-group">
+            <label>College / University *</label>
+            <input type="text" name="college"
+              placeholder="e.g. KLE Technological University" required/>
+          </div>
+          <div class="form-group">
+            <label>Graduation Year</label>
+            <input type="text" name="grad_year" placeholder="e.g. 2026"/>
+          </div>
+          <div class="form-group">
+            <label>Percentage / CGPA</label>
+            <input type="text" name="percentage" placeholder="e.g. 8.5 CGPA"/>
+          </div>
         </div>
       </div>
+
+      <!-- Post Graduation Toggle -->
+      <div class="pg-toggle-area">
+        <button type="button" class="add-more-btn"
+          onclick="togglePG()" id="pgToggleBtn">
+          ➕ Add Post Graduation (optional)
+        </button>
+      </div>
+
+      <!-- Post Graduation Fields (hidden by default) -->
+      <div class="edu-block" id="pgSection" style="display:none; margin-top:14px;">
+        <div class="edu-block-title">🎓 Post Graduation</div>
+        <div class="grid">
+          <div class="form-group">
+            <label>PG Degree</label>
+            <input type="text" name="pg_degree"
+              placeholder="e.g. M.Tech, MBA, MCA"/>
+          </div>
+          <div class="form-group">
+            <label>PG College / University</label>
+            <input type="text" name="pg_college"
+              placeholder="e.g. IIT Bombay"/>
+          </div>
+          <div class="form-group">
+            <label>PG Graduation Year</label>
+            <input type="text" name="pg_year" placeholder="e.g. 2028"/>
+          </div>
+          <div class="form-group">
+            <label>PG Percentage / CGPA</label>
+            <input type="text" name="pg_percentage" placeholder="e.g. 9.0 CGPA"/>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Skills -->
@@ -80,11 +121,12 @@
         <div class="tag-input-container">
           <div id="skillTags" class="tag-box"></div>
           <div class="tag-input-row">
-            <input type="text" id="skillInput" placeholder="Type a skill and press ➕"/>
-            <button type="button" class="add-btn" onclick="addSkill()">➕</button>
+            <input type="text" id="skillInput"
+              placeholder="Type a skill and press ➕"/>
+            <button type="button" class="add-btn"
+              onclick="addSkill()">➕</button>
           </div>
         </div>
-        <!-- Hidden input to store skills -->
         <input type="hidden" name="skills" id="skillsHidden"/>
       </div>
     </div>
@@ -100,7 +142,7 @@
           <input type="text" name="project_title[]"
             placeholder="Project Name e.g. Resume Generator" required/>
           <textarea name="project_desc[]" rows="2"
-            placeholder="What does it do? e.g. AI tool that creates resumes using Python"></textarea>
+            placeholder="What does it do?"></textarea>
         </div>
       </div>
       <button type="button" class="add-more-btn" onclick="addProject()">
@@ -137,7 +179,8 @@
       <div class="form-group">
         <label>Certifications, Clubs, Awards</label>
         <textarea name="achievements" rows="3"
-          placeholder="e.g. Google Python Certificate, NSS Volunteer, Hackathon Winner"></textarea>
+          placeholder="e.g. Google Python Certificate, NSS Volunteer, Hackathon Winner">
+        </textarea>
       </div>
     </div>
 
@@ -147,18 +190,68 @@
       <div class="form-group">
         <label>Additional Information (optional)</label>
         <textarea name="extra" rows="3"
-          placeholder="e.g. Languages known, hobbies, volunteer work, publications, or anything else you want on your resume!"></textarea>
+          placeholder="e.g. Languages known, hobbies, volunteer work, publications...">
+        </textarea>
       </div>
     </div>
 
     <!-- Job Target -->
     <div class="section">
       <h2>🎯 Job Target</h2>
+      <p class="section-hint">
+        Select from common roles below or add your own custom roles!
+      </p>
+
+      <!-- Dropdown -->
       <div class="form-group">
-        <label>Role you are applying for *</label>
-        <input type="text" name="job_role"
-          placeholder="e.g. Python Developer Intern" required/>
+        <label>Pick a Common Role</label>
+        <select id="jobDropdown" onchange="addFromDropdown()">
+          <option value="">-- Select a role --</option>
+          <optgroup label="🖥️ Tech Roles">
+            <option>Python Developer Intern</option>
+            <option>Web Developer Intern</option>
+            <option>Frontend Developer Intern</option>
+            <option>Backend Developer Intern</option>
+            <option>Full Stack Developer Intern</option>
+            <option>Data Science Intern</option>
+            <option>Machine Learning Intern</option>
+            <option>AI Engineer Intern</option>
+            <option>Android Developer Intern</option>
+            <option>iOS Developer Intern</option>
+            <option>DevOps Intern</option>
+            <option>Cybersecurity Intern</option>
+            <option>Cloud Computing Intern</option>
+            <option>UI/UX Designer Intern</option>
+            <option>Database Administrator Intern</option>
+          </optgroup>
+          <optgroup label="📊 Non-Tech Roles">
+            <option>Business Analyst Intern</option>
+            <option>Marketing Intern</option>
+            <option>HR Intern</option>
+            <option>Finance Intern</option>
+            <option>Operations Intern</option>
+            <option>Content Writer Intern</option>
+            <option>Graphic Designer Intern</option>
+            <option>Sales Intern</option>
+          </optgroup>
+        </select>
       </div>
+
+      <!-- Custom Role Input -->
+      <div class="form-group">
+        <label>Or Add Custom Role</label>
+        <div class="tag-input-row">
+          <input type="text" id="jobInput"
+            placeholder="Type your own role and press ➕"/>
+          <button type="button" class="add-btn"
+            onclick="addCustomJob()">➕</button>
+        </div>
+      </div>
+
+      <!-- Selected Job Tags -->
+      <div class="tag-box" id="jobTags"></div>
+      <input type="hidden" name="job_roles" id="jobRolesHidden"/>
+
     </div>
 
     <!-- Submit -->
@@ -179,17 +272,13 @@
 </div>
 
 <script>
-  // ── SKILLS TAG SYSTEM ──
+  // ── SKILLS TAGS ──
   let skills = [];
 
   function addSkill() {
     const input = document.getElementById('skillInput');
     const skill = input.value.trim();
-    if (!skill) return;
-    if (skills.includes(skill)) {
-      input.value = '';
-      return;
-    }
+    if (!skill || skills.includes(skill)) { input.value=''; return; }
     skills.push(skill);
     renderSkillTags();
     input.value = '';
@@ -203,26 +292,96 @@
   }
 
   function renderSkillTags() {
-    const box = document.getElementById('skillTags');
-    box.innerHTML = skills.map(skill => `
-      <span class="tag">
-        ${skill}
-        <button type="button" onclick="removeSkill('${skill}')">&times;</button>
-      </span>
-    `).join('');
+    document.getElementById('skillTags').innerHTML =
+      skills.map(skill => `
+        <span class="tag">
+          ${skill}
+          <button type="button"
+            onclick="removeSkill('${skill}')">&times;</button>
+        </span>
+      `).join('');
   }
 
   function updateSkillsHidden() {
     document.getElementById('skillsHidden').value = skills.join(', ');
   }
 
-  // Allow Enter key to add skill
-  document.getElementById('skillInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addSkill();
-    }
+  document.getElementById('skillInput')
+    .addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); addSkill(); }
   });
+
+  // ── JOB ROLES TAGS ──
+  let jobRoles = [];
+
+  function addFromDropdown() {
+    const dropdown = document.getElementById('jobDropdown');
+    const role = dropdown.value.trim();
+    if (!role || jobRoles.includes(role)) {
+      dropdown.value = '';
+      return;
+    }
+    jobRoles.push(role);
+    renderJobTags();
+    dropdown.value = '';
+    updateJobRolesHidden();
+  }
+
+  function addCustomJob() {
+    const input = document.getElementById('jobInput');
+    const role  = input.value.trim();
+    if (!role || jobRoles.includes(role)) { input.value=''; return; }
+    jobRoles.push(role);
+    renderJobTags();
+    input.value = '';
+    updateJobRolesHidden();
+  }
+
+  function removeJob(role) {
+    jobRoles = jobRoles.filter(r => r !== role);
+    renderJobTags();
+    updateJobRolesHidden();
+  }
+
+  function renderJobTags() {
+    document.getElementById('jobTags').innerHTML =
+      jobRoles.map(role => `
+        <span class="tag">
+          ${role}
+          <button type="button"
+            onclick="removeJob('${role}')">&times;</button>
+        </span>
+      `).join('');
+  }
+
+  function updateJobRolesHidden() {
+    document.getElementById('jobRolesHidden').value = jobRoles.join(', ');
+  }
+
+  document.getElementById('jobInput')
+    .addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); addCustomJob(); }
+  });
+
+  // ── POST GRADUATION TOGGLE ──
+  let pgVisible = false;
+
+  function togglePG() {
+    pgVisible = !pgVisible;
+    const section = document.getElementById('pgSection');
+    const btn     = document.getElementById('pgToggleBtn');
+    if (pgVisible) {
+      section.style.display = 'block';
+      btn.textContent = '➖ Remove Post Graduation';
+      btn.style.borderColor = '#ff5252';
+      btn.style.color = '#ff5252';
+    } else {
+      section.style.display = 'none';
+      btn.textContent = '➕ Add Post Graduation (optional)';
+      btn.style.borderColor = '#667eea';
+      btn.style.color = '#667eea';
+    }
+  }
 
   // ── DYNAMIC PROJECTS ──
   let projectCount = 1;
@@ -237,7 +396,9 @@
       <div class="dynamic-header">
         <label>Project ${projectCount}</label>
         <button type="button" class="remove-btn"
-          onclick="removeItem('project_${projectCount}')">✖ Remove</button>
+          onclick="removeItem('project_${projectCount}')">
+          ✖ Remove
+        </button>
       </div>
       <input type="text" name="project_title[]"
         placeholder="Project Name"/>
@@ -260,7 +421,9 @@
       <div class="dynamic-header">
         <label>Internship ${internshipCount}</label>
         <button type="button" class="remove-btn"
-          onclick="removeItem('internship_${internshipCount}')">✖ Remove</button>
+          onclick="removeItem('internship_${internshipCount}')">
+          ✖ Remove
+        </button>
       </div>
       <input type="text" name="internship_company[]"
         placeholder="Company Name"/>
@@ -274,7 +437,7 @@
     container.appendChild(div);
   }
 
-  // ── REMOVE ANY DYNAMIC ITEM ──
+  // ── REMOVE ITEM ──
   function removeItem(id) {
     const el = document.getElementById(id);
     if (el) el.remove();
@@ -283,8 +446,9 @@
   // ── PREPARE SUBMIT ──
   function prepareSubmit() {
     updateSkillsHidden();
+    updateJobRolesHidden();
   }
 </script>
 
 </body>
-</html>
+</html>  

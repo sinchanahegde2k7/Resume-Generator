@@ -331,3 +331,52 @@ textarea {
     width: 100%;
   }
 } 
+/* ── Education Blocks ── */
+.edu-block {
+  background: #f8f9ff;
+  border: 2px solid #e8ebff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.edu-block-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.pg-toggle-area {
+  margin-top: 8px;
+}
+
+/* ── Section Hint ── */
+.section-hint {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 14px;
+  font-style: italic;
+}
+
+/* ── Job Dropdown ── */
+select {
+  padding: 11px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #333;
+  width: 100%;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background: white;
+}
+
+select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+} 
