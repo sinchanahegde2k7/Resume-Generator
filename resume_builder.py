@@ -1,379 +1,300 @@
-# resume_builder.py - Final Version
+# resume_builder.py
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer,
-    HRFlowable, Table, TableStyle
+    SimpleDocTemplate, Paragraph,
+    Spacer, HRFlowable, Table, TableStyle
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
+from reportlab.platypus import Image as RLImage
 import os
 
-# ── Colors ──
-PURPLE     = colors.HexColor("#5C6BC0")
-DARK_GRAY  = colors.HexColor("#212121")
-MED_GRAY   = colors.HexColor("#616161")
-ACCENT     = colors.HexColor("#E8EAF6")
-WHITE      = colors.white
+# ── Palette ──
+PURPLE = colors.HexColor("#5C6BC0")
+DARK   = colors.HexColor("#1a1a2e")
+GRAY   = colors.HexColor("#555555")
+LGRAY  = colors.HexColor("#888888")
+ACCENT = colors.HexColor("#EEF0FF")
+WHITE  = colors.white
 
 
-def build_resume_pdf(student_data, ai_content, output_path="resume_output.pdf"):
+def build_resume_pdf(student_data, ai_content, output_path):
 
     doc = SimpleDocTemplate(
-        output_path,
-        pagesize=A4,
-        rightMargin=12 * mm,
-        leftMargin=12 * mm,
-        topMargin=10 * mm,
-        bottomMargin=10 * mm,
+        output_path, pagesize=A4,
+        rightMargin=12*mm, leftMargin=12*mm,
+        topMargin=10*mm,   bottomMargin=12*mm,
     )
 
     # ── Styles ──
-    name_style = ParagraphStyle(
-        "NameStyle",
-        fontSize=24,
-        textColor=WHITE,
-        alignment=TA_CENTER,
+    def S(name, **kw):
+        return ParagraphStyle(name, **kw)
+
+    NAME = S("NAME",
+        fontSize=22, textColor=WHITE,
         fontName="Helvetica-Bold",
-    )
+        alignment=TA_LEFT, leading=26)
 
-    contact_style = ParagraphStyle(
-        "ContactStyle",
-        fontSize=8.5,
-        textColor=WHITE,
-        alignment=TA_CENTER,
+    CONTACT = S("CONTACT",
+        fontSize=8, textColor=WHITE,
         fontName="Helvetica",
-        spaceBefore=2,
-    )
+        alignment=TA_LEFT, leading=13, spaceBefore=2)
 
-    section_heading = ParagraphStyle(
-        "SectionHeading",
-        fontSize=10,
-        textColor=PURPLE,
+    SEC_HEAD = S("SEC_HEAD",
+        fontSize=9.5, textColor=PURPLE,
         fontName="Helvetica-Bold",
-        spaceBefore=8,
-        spaceAfter=3,
-    )
+        spaceBefore=10, spaceAfter=2)
 
-    body_style = ParagraphStyle(
-        "BodyStyle",
-        fontSize=9,
-        textColor=DARK_GRAY,
+    BODY = S("BODY",
+        fontSize=9, textColor=DARK,
         fontName="Helvetica",
-        spaceAfter=2,
-        leading=13,
-    )
+        leading=14, spaceAfter=2)
 
-    bullet_style = ParagraphStyle(
-        "BulletStyle",
-        fontSize=9,
-        textColor=DARK_GRAY,
+    BULLET = S("BULLET",
+        fontSize=9, textColor=DARK,
         fontName="Helvetica",
-        spaceAfter=2,
-        leading=13,
-        leftIndent=10,
-    )
+        leading=14, spaceAfter=2,
+        leftIndent=8)
 
-    label_style = ParagraphStyle(
-        "LabelStyle",
-        fontSize=9.5,
-        textColor=DARK_GRAY,
+    LABEL = S("LABEL",
+        fontSize=9.5, textColor=DARK,
         fontName="Helvetica-Bold",
-        spaceAfter=2,
-        spaceBefore=4,
-    )
+        spaceAfter=1, spaceBefore=5)
 
-    sub_label_style = ParagraphStyle(
-        "SubLabelStyle",
-        fontSize=8.5,
-        textColor=MED_GRAY,
+    SUBLABEL = S("SUBLABEL",
+        fontSize=8, textColor=LGRAY,
         fontName="Helvetica",
-        spaceAfter=2,
-    )
+        spaceAfter=2)
 
-    side_heading = ParagraphStyle(
-        "SideHeading",
-        fontSize=9,
-        textColor=PURPLE,
+    R_HEAD = S("R_HEAD",
+        fontSize=8.5, textColor=PURPLE,
         fontName="Helvetica-Bold",
-        spaceAfter=3,
-        spaceBefore=6,
-    )
+        spaceBefore=8, spaceAfter=2)
 
-    side_body = ParagraphStyle(
-        "SideBody",
-        fontSize=8.5,
-        textColor=DARK_GRAY,
+    R_BODY = S("R_BODY",
+        fontSize=8, textColor=DARK,
         fontName="Helvetica",
-        spaceAfter=2,
-        leading=12,
-    )
+        leading=12, spaceAfter=2)
 
     # ── Helpers ──
-    def section_title(title):
-        return [
-            Paragraph(title.upper(), section_heading),
-            HRFlowable(
-                width="100%", thickness=1,
-                color=PURPLE, spaceAfter=4
-            ),
-        ]
+    def divider():
+        return HRFlowable(
+            width="100%", thickness=0.8,
+            color=PURPLE, spaceAfter=4
+        )
 
-    def format_bullets(text):
-        items = []
+    def sec(title):
+        return [Paragraph(title.upper(), SEC_HEAD), divider()]
+
+    def bullets(text):
+        out = []
         for line in text.strip().split("\n"):
-            line = line.strip().lstrip("•*-– ").strip()
-            line = line.replace("**", "")
+            line = line.strip().lstrip("•*-–▸■ ").strip()
             if line:
-                items.append(Paragraph(f"• {line}", bullet_style))
-        return items
+                out.append(Paragraph(f"• {line}", BULLET))
+        return out
+
+    def r_sec(title):
+        return [Paragraph(title.upper(), R_HEAD), divider()]
+
+    def r_bullets(text):
+        out = []
+        for line in text.strip().split("\n"):
+            line = line.strip().lstrip("•*-–▸■ ").strip()
+            if line:
+                out.append(Paragraph(f"▸ {line}", R_BODY))
+        return out
 
     story = []
 
-    # ════════════════════════════
+    # ════════════════════════════════════
     # HEADER
-    # ════════════════════════════
-    name = student_data.get("name", "Your Name").upper()
+    # ════════════════════════════════════
+    name = student_data.get("name", "").upper()
 
-    contact_parts = []
+    contacts = []
     if student_data.get("email"):
-        contact_parts.append(student_data["email"])
+        contacts.append(student_data["email"])
     if student_data.get("phone"):
-        contact_parts.append(student_data["phone"])
+        contacts.append(student_data["phone"])
     if student_data.get("location"):
-        contact_parts.append(student_data["location"])
-    contact_line = "   |   ".join(contact_parts)
+        contacts.append(student_data["location"])
 
-    links_parts = []
+    links = []
     if student_data.get("linkedin"):
-        links_parts.append(f"LinkedIn: {student_data['linkedin']}")
+        links.append(f"in/ {student_data['linkedin']}")
     if student_data.get("github"):
-        links_parts.append(f"GitHub: {student_data['github']}")
-    links_line = "   |   ".join(links_parts)
+        links.append(f"gh/ {student_data['github']}")
 
-    header_rows = [
-        [Paragraph(name, name_style)],
-        [Paragraph(contact_line, contact_style)],
+    left_header = [
+        Paragraph(name, NAME),
+        Paragraph("  |  ".join(contacts), CONTACT),
     ]
-    if links_line:
-        header_rows.append(
-            [Paragraph(links_line, contact_style)]
-        )
+    if links:
+        left_header.append(Paragraph("  |  ".join(links), CONTACT))
 
-    header_table = Table(header_rows, colWidths=["100%"])
-    header_table.setStyle(TableStyle([
-        ("BACKGROUND",    (0, 0), (-1, -1), PURPLE),
-        ("ALIGN",         (0, 0), (-1, -1), "CENTER"),
-        ("TOPPADDING",    (0, 0), (-1, -1), 12),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
-        ("LEFTPADDING",   (0, 0), (-1, -1), 8),
-        ("RIGHTPADDING",  (0, 0), (-1, -1), 8),
+    # Photo
+    photo_path = student_data.get("photo_path")
+    if photo_path and os.path.exists(photo_path):
+        try:
+            photo_cell = RLImage(photo_path, width=24*mm, height=24*mm)
+        except:
+            photo_cell = Paragraph("", CONTACT)
+    else:
+        photo_cell = Paragraph("", CONTACT)
+
+    hdr = Table(
+        [[left_header, photo_cell]],
+        colWidths=[148*mm, 26*mm]
+    )
+    hdr.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (-1,-1), PURPLE),
+        ("VALIGN",        (0,0), (-1,-1), "MIDDLE"),
+        ("ALIGN",         (1,0), (1,-1),  "CENTER"),
+        ("TOPPADDING",    (0,0), (-1,-1), 14),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 14),
+        ("LEFTPADDING",   (0,0), (0,-1),  14),
+        ("RIGHTPADDING",  (1,0), (1,-1),   8),
     ]))
-    story.append(header_table)
-    story.append(Spacer(1, 6))
+    story.append(hdr)
+    story.append(Spacer(1, 8))
 
-    # ════════════════════════════
-    # TWO COLUMN LAYOUT
-    # ════════════════════════════
+    # ════════════════════════════════════
+    # LEFT COLUMN
+    # ════════════════════════════════════
+    L = []
 
-    # ── LEFT COLUMN ──
-    left = []
-
-    # Professional Summary
-    left += section_title("Professional Summary")
-    summary = ai_content.get("summary", "").strip().replace("**", "")
+    # Summary
+    L += sec("Professional Summary")
+    summary = ai_content.get("summary", "").strip()
     if summary:
-        left.append(Paragraph(summary, body_style))
-    left.append(Spacer(1, 4))
+        L.append(Paragraph(summary, BODY))
+    L.append(Spacer(1, 4))
 
     # Projects
-    projects      = student_data.get("projects", [])
-    project_descs = ai_content.get("project_descriptions", [])
+    projects  = student_data.get("projects", [])
+    p_descs   = ai_content.get("project_descriptions", [])
     if projects:
-        left += section_title("Projects")
-        for i, project in enumerate(projects):
-            left.append(
-                Paragraph(
-                    f"<b>{project.get('title', '')}</b>",
-                    label_style
-                )
-            )
-            if i < len(project_descs):
-                left += format_bullets(project_descs[i])
-            elif project.get("desc"):
-                left += format_bullets(project["desc"])
-            left.append(Spacer(1, 4))
+        L += sec("Projects")
+        for i, p in enumerate(projects):
+            L.append(Paragraph(f"<b>{p.get('title','')}</b>", LABEL))
+            desc = p_descs[i] if i < len(p_descs) else p.get("desc","")
+            if desc:
+                L += bullets(desc)
+            L.append(Spacer(1, 4))
 
     # Internships
-    internships      = student_data.get("internships", [])
-    internship_descs = ai_content.get("internship_descriptions", [])
+    internships = student_data.get("internships", [])
+    i_descs     = ai_content.get("internship_descriptions", [])
     if internships:
-        left += section_title("Internship / Experience")
-        for i, intern in enumerate(internships):
-            company  = intern.get("company", "")
-            role     = intern.get("role", "")
-            duration = intern.get("duration", "")
-            left.append(
-                Paragraph(
-                    f"<b>{role}</b> — {company}",
-                    label_style
+        L += sec("Internship / Experience")
+        for i, n in enumerate(internships):
+            role     = n.get("role", "")
+            company  = n.get("company", "")
+            duration = n.get("duration", "")
+            if role or company:
+                L.append(
+                    Paragraph(
+                        f"<b>{role}</b>" + (f" — {company}" if company else ""),
+                        LABEL
+                    )
                 )
-            )
             if duration:
-                left.append(Paragraph(duration, sub_label_style))
-            if i < len(internship_descs):
-                left += format_bullets(internship_descs[i])
-            elif intern.get("desc"):
-                left += format_bullets(intern["desc"])
-            left.append(Spacer(1, 4))
+                L.append(Paragraph(duration, SUBLABEL))
+            desc = i_descs[i] if i < len(i_descs) else n.get("desc","")
+            if desc:
+                L += bullets(desc)
+            L.append(Spacer(1, 4))
 
-    # Extra Section
-    extra    = student_data.get("extra", "").strip()
-    extra_ai = ai_content.get("extra", "").strip()
-    if extra and extra_ai.upper() != "NONE" and extra_ai:
-        left += section_title("Additional Information")
-        left += format_bullets(extra_ai)
-        left.append(Spacer(1, 4))
+    # Extra
+    extra = ai_content.get("extra", "").strip()
+    if extra:
+        L += sec("Additional Information")
+        L += bullets(extra)
+        L.append(Spacer(1, 4))
 
-    # ── RIGHT COLUMN ──
-    right = []
+    # ════════════════════════════════════
+    # RIGHT COLUMN
+    # ════════════════════════════════════
+    R = []
 
-    # Education — Graduation
-    right.append(Paragraph("EDUCATION", side_heading))
-    right.append(HRFlowable(
-        width="100%", thickness=1,
-        color=PURPLE, spaceAfter=4
-    ))
-    if student_data.get("degree"):
-        right.append(
-            Paragraph(
-                f"<b>{student_data['degree']}</b>", side_body
-            )
-        )
-    if student_data.get("college"):
-        right.append(Paragraph(student_data["college"], side_body))
+    # Education
+    R += r_sec("Education")
+    R.append(Paragraph(f"<b>{student_data.get('degree','')}</b>", R_BODY))
+    R.append(Paragraph(student_data.get("college",""), R_BODY))
     if student_data.get("grad_year"):
-        right.append(
-            Paragraph(
-                f"Graduating: {student_data['grad_year']}", side_body
-            )
-        )
+        R.append(Paragraph(f"Year: {student_data['grad_year']}", R_BODY))
     if student_data.get("percentage"):
-        right.append(
-            Paragraph(
-                f"CGPA: {student_data['percentage']}", side_body
-            )
-        )
+        R.append(Paragraph(f"CGPA: {student_data['percentage']}", R_BODY))
 
-    # Post Graduation
+    # PG
     if student_data.get("pg_degree"):
-        right.append(Spacer(1, 6))
-        right.append(
-            Paragraph("<b>Post Graduation</b>", side_body)
-        )
-        right.append(
-            Paragraph(
-                f"<b>{student_data['pg_degree']}</b>", side_body
-            )
-        )
+        R.append(Spacer(1, 6))
+        R.append(Paragraph("<b>Post Graduation</b>", R_BODY))
+        R.append(Paragraph(f"<b>{student_data['pg_degree']}</b>", R_BODY))
         if student_data.get("pg_college"):
-            right.append(
-                Paragraph(student_data["pg_college"], side_body)
-            )
+            R.append(Paragraph(student_data["pg_college"], R_BODY))
         if student_data.get("pg_year"):
-            right.append(
-                Paragraph(
-                    f"Graduating: {student_data['pg_year']}", side_body
-                )
-            )
+            R.append(Paragraph(f"Year: {student_data['pg_year']}", R_BODY))
         if student_data.get("pg_percentage"):
-            right.append(
-                Paragraph(
-                    f"CGPA: {student_data['pg_percentage']}", side_body
-                )
-            )
+            R.append(Paragraph(f"CGPA: {student_data['pg_percentage']}", R_BODY))
 
-    right.append(Spacer(1, 6))
+    R.append(Spacer(1, 4))
 
     # Skills
-    right.append(Paragraph("SKILLS", side_heading))
-    right.append(HRFlowable(
-        width="100%", thickness=1,
-        color=PURPLE, spaceAfter=4
-    ))
     skills = ai_content.get("skills", "").strip()
     if skills:
-        for skill in skills.replace(";", ",").split(","):
-            skill = skill.replace("**", "").strip()
-            if skill:
-                right.append(Paragraph(f"▸ {skill}", side_body))
-    right.append(Spacer(1, 6))
+        R += r_sec("Skills")
+        for sk in skills.replace(";",",").split(","):
+            sk = sk.strip()
+            if sk:
+                R.append(Paragraph(f"▸ {sk}", R_BODY))
+        R.append(Spacer(1, 4))
 
     # Achievements
-    ach_raw = student_data.get("achievements", "").strip()
-    ach_ai  = ai_content.get("achievements", "").strip()
+    ach_raw = student_data.get("achievements","").strip()
+    ach_ai  = ai_content.get("achievements","").strip()
     if ach_raw:
-        right.append(Paragraph("ACHIEVEMENTS", side_heading))
-        right.append(HRFlowable(
-            width="100%", thickness=1,
-            color=PURPLE, spaceAfter=4
-        ))
-        if ach_ai:
-            for line in ach_ai.strip().split("\n"):
-                line = line.strip().lstrip("•*-– ").replace("**","").strip()
-                if line:
-                    right.append(Paragraph(f"▸ {line}", side_body))
-        else:
-            right.append(Paragraph(f"▸ {ach_raw}", side_body))
-        right.append(Spacer(1, 6))
+        R += r_sec("Achievements")
+        src = ach_ai if ach_ai else ach_raw
+        R += r_bullets(src)
+        R.append(Spacer(1, 4))
 
     # GitHub
-    github = student_data.get("github", "").strip()
+    github = student_data.get("github","").strip()
     if github:
-        right.append(Paragraph("GITHUB", side_heading))
-        right.append(HRFlowable(
-            width="100%", thickness=1,
-            color=PURPLE, spaceAfter=4
-        ))
-        right.append(Paragraph(f"▸ {github}", side_body))
-        right.append(Spacer(1, 6))
+        R += r_sec("GitHub")
+        R.append(Paragraph(f"▸ {github}", R_BODY))
+        R.append(Spacer(1, 4))
 
     # Job Targets
-    job_roles = student_data.get("job_roles", "").strip()
+    job_roles = student_data.get("job_roles","").strip()
     if job_roles:
-        right.append(Paragraph("JOB TARGETS", side_heading))
-        right.append(HRFlowable(
-            width="100%", thickness=1,
-            color=PURPLE, spaceAfter=4
-        ))
+        R += r_sec("Job Targets")
         for role in job_roles.split(","):
             role = role.strip()
             if role:
-                right.append(Paragraph(f"▸ {role}", side_body))
-        right.append(Spacer(1, 6))
+                R.append(Paragraph(f"▸ {role}", R_BODY))
+        R.append(Spacer(1, 4))
 
-    # ── PAD COLUMNS ──
-    max_len = max(len(left), len(right))
-    while len(left)  < max_len:
-        left.append(Spacer(1, 1))
-    while len(right) < max_len:
-        right.append(Spacer(1, 1))
+    # ── Pad shorter column ──
+    mx = max(len(L), len(R))
+    L += [Spacer(1,1)] * (mx - len(L))
+    R += [Spacer(1,1)] * (mx - len(R))
 
-    # ── TWO COLUMN TABLE ──
-    two_col = Table(
-        [[left, right]],
-        colWidths=[125 * mm, 55 * mm],
-    )
-    two_col.setStyle(TableStyle([
-        ("VALIGN",       (0, 0), (-1, -1), "TOP"),
-        ("LEFTPADDING",  (0, 0), (0, -1), 0),
-        ("RIGHTPADDING", (0, 0), (0, -1), 8),
-        ("LEFTPADDING",  (1, 0), (1, -1), 8),
-        ("RIGHTPADDING", (1, 0), (1, -1), 0),
-        ("BACKGROUND",   (1, 0), (1, -1), ACCENT),
+    # ── Two Column Table ──
+    body = Table([[L, R]], colWidths=[124*mm, 56*mm])
+    body.setStyle(TableStyle([
+        ("VALIGN",       (0,0), (-1,-1), "TOP"),
+        ("LEFTPADDING",  (0,0), (0,-1),  0),
+        ("RIGHTPADDING", (0,0), (0,-1),  10),
+        ("LEFTPADDING",  (1,0), (1,-1),  10),
+        ("RIGHTPADDING", (1,0), (1,-1),  0),
+        ("BACKGROUND",   (1,0), (1,-1),  ACCENT),
     ]))
-    story.append(two_col)
+    story.append(body)
 
     doc.build(story)
-    return output_path 
+    return output_path

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Resume Generator</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
@@ -10,203 +10,237 @@
 
 <div class="container">
 
-  <!-- Header -->
+  <!-- HEADER -->
   <div class="header">
     <h1>🎓 AI Resume Generator</h1>
     <p>Fill in your details and let AI build your professional resume!</p>
   </div>
 
-  <form action="/generate" method="POST" id="resumeForm">
+  <form action="/generate" method="POST"
+        enctype="multipart/form-data" id="resumeForm">
 
-    <!-- Personal Info -->
+    <!-- ── PERSONAL INFO ── -->
     <div class="section">
       <h2>👤 Personal Information</h2>
-      <div class="grid">
-        <div class="form-group">
+      <div class="grid2">
+        <div class="field">
           <label>Full Name *</label>
-          <input type="text" name="name" placeholder="e.g. Sinchana Hegde" required/>
+          <input type="text" name="name"
+            placeholder="e.g. Sinchana Hegde" required/>
         </div>
-        <div class="form-group">
+        <div class="field">
           <label>Email Address *</label>
-          <input type="email" name="email" placeholder="e.g. sinchana@gmail.com" required/>
+          <input type="email" name="email"
+            placeholder="e.g. sinchana@gmail.com" required/>
         </div>
-        <div class="form-group">
+        <div class="field">
           <label>Phone Number</label>
-          <input type="text" name="phone" placeholder="e.g. 9876543210"/>
+          <input type="text" name="phone"
+            placeholder="e.g. 9876543210"/>
         </div>
-        <div class="form-group">
+        <div class="field">
           <label>City, State</label>
-          <input type="text" name="location" placeholder="e.g. Belagavi, Karnataka"/>
+          <input type="text" name="location"
+            placeholder="e.g. Belagavi, Karnataka"/>
         </div>
-        <div class="form-group">
-          <label>LinkedIn URL (optional)</label>
-          <input type="text" name="linkedin" placeholder="linkedin.com/in/yourname"/>
+        <div class="field">
+          <label>LinkedIn URL</label>
+          <input type="text" name="linkedin"
+            placeholder="e.g. linkedin.com/in/sinchana"/>
         </div>
-        <div class="form-group">
-          <label>GitHub URL (optional)</label>
-          <input type="text" name="github" placeholder="github.com/yourusername"/>
+        <div class="field">
+          <label>GitHub URL</label>
+          <input type="text" name="github"
+            placeholder="e.g. github.com/sinchana"/>
         </div>
+      </div>
+
+      <!-- Photo Upload -->
+      <div class="photo-section">
+        <label class="photo-label">📸 Profile Photo (optional)</label>
+        <div class="photo-box" onclick="document.getElementById('photoInput').click()">
+          <img id="photoPreview" src="" style="display:none"/>
+          <div id="photoPlaceholder">
+            <div class="photo-icon">📷</div>
+            <p>Click to upload</p>
+            <small>Passport size • JPG/PNG</small>
+          </div>
+        </div>
+        <input type="file" id="photoInput" name="photo"
+          accept="image/*" style="display:none"
+          onchange="previewPhoto(this)"/>
       </div>
     </div>
 
-    <!-- Education -->
+    <!-- ── EDUCATION ── -->
     <div class="section">
       <h2>🏫 Education</h2>
 
       <!-- Graduation -->
-      <div class="edu-block">
-        <div class="edu-block-title">🎓 Graduation</div>
-        <div class="grid">
-          <div class="form-group">
+      <div class="edu-card">
+        <div class="edu-card-title">🎓 Graduation</div>
+        <div class="grid2">
+          <div class="field">
             <label>Degree *</label>
             <input type="text" name="degree"
               placeholder="e.g. B.Tech Computer Science" required/>
           </div>
-          <div class="form-group">
+          <div class="field">
             <label>College / University *</label>
             <input type="text" name="college"
               placeholder="e.g. KLE Technological University" required/>
           </div>
-          <div class="form-group">
+          <div class="field">
             <label>Graduation Year</label>
-            <input type="text" name="grad_year" placeholder="e.g. 2026"/>
+            <input type="text" name="grad_year"
+              placeholder="e.g. 2026"/>
           </div>
-          <div class="form-group">
+          <div class="field">
             <label>Percentage / CGPA</label>
-            <input type="text" name="percentage" placeholder="e.g. 8.5 CGPA"/>
+            <input type="text" name="percentage"
+              placeholder="e.g. 8.5 CGPA"/>
           </div>
         </div>
       </div>
 
-      <!-- Post Graduation Toggle -->
-      <div class="pg-toggle-area">
-        <button type="button" class="add-more-btn"
-          onclick="togglePG()" id="pgToggleBtn">
-          ➕ Add Post Graduation (optional)
-        </button>
-      </div>
+      <!-- PG Toggle -->
+      <button type="button" class="toggle-btn"
+        id="pgBtn" onclick="togglePG()">
+        ➕ Add Post Graduation (optional)
+      </button>
 
-      <!-- Post Graduation Fields (hidden by default) -->
-      <div class="edu-block" id="pgSection" style="display:none; margin-top:14px;">
-        <div class="edu-block-title">🎓 Post Graduation</div>
-        <div class="grid">
-          <div class="form-group">
+      <!-- Post Graduation -->
+      <div class="edu-card" id="pgCard" style="display:none; margin-top:12px;">
+        <div class="edu-card-title">🎓 Post Graduation</div>
+        <div class="grid2">
+          <div class="field">
             <label>PG Degree</label>
             <input type="text" name="pg_degree"
               placeholder="e.g. M.Tech, MBA, MCA"/>
           </div>
-          <div class="form-group">
+          <div class="field">
             <label>PG College / University</label>
             <input type="text" name="pg_college"
               placeholder="e.g. IIT Bombay"/>
           </div>
-          <div class="form-group">
+          <div class="field">
             <label>PG Graduation Year</label>
-            <input type="text" name="pg_year" placeholder="e.g. 2028"/>
+            <input type="text" name="pg_year"
+              placeholder="e.g. 2028"/>
           </div>
-          <div class="form-group">
+          <div class="field">
             <label>PG Percentage / CGPA</label>
-            <input type="text" name="pg_percentage" placeholder="e.g. 9.0 CGPA"/>
+            <input type="text" name="pg_percentage"
+              placeholder="e.g. 9.0 CGPA"/>
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- Skills -->
+    <!-- ── SKILLS ── -->
     <div class="section">
       <h2>💻 Skills</h2>
-      <div class="form-group">
-        <label>Add Skills</label>
-        <div class="tag-input-container">
-          <div id="skillTags" class="tag-box"></div>
-          <div class="tag-input-row">
-            <input type="text" id="skillInput"
-              placeholder="Type a skill and press ➕"/>
-            <button type="button" class="add-btn"
-              onclick="addSkill()">➕</button>
-          </div>
+      <div class="tag-wrapper">
+        <div id="skillTags" class="tag-box"></div>
+        <div class="tag-row">
+          <input type="text" id="skillInput"
+            placeholder="Type a skill and press ➕ or Enter"/>
+          <button type="button" class="icon-btn"
+            onclick="addSkill()">➕</button>
         </div>
-        <input type="hidden" name="skills" id="skillsHidden"/>
       </div>
+      <input type="hidden" name="skills" id="skillsHidden"/>
     </div>
 
-    <!-- Projects -->
+    <!-- ── PROJECTS ── -->
     <div class="section">
       <h2>🛠️ Projects</h2>
       <div id="projectsContainer">
-        <div class="dynamic-item" id="project_1">
-          <div class="dynamic-header">
-            <label>Project 1 *</label>
+        <div class="dynamic-card" id="project_1">
+          <div class="card-header">
+            <span class="card-label">Project 1</span>
           </div>
-          <input type="text" name="project_title[]"
-            placeholder="Project Name e.g. Resume Generator" required/>
-          <textarea name="project_desc[]" rows="2"
-            placeholder="What does it do?"></textarea>
+          <div class="field">
+            <label>Project Name *</label>
+            <input type="text" name="project_title[]"
+              placeholder="e.g. AI Resume Generator" required/>
+          </div>
+          <div class="field">
+            <label>What does it do?</label>
+            <textarea name="project_desc[]" rows="2"
+              placeholder="e.g. Generates professional resumes using Python and AI"></textarea>
+          </div>
         </div>
       </div>
-      <button type="button" class="add-more-btn" onclick="addProject()">
-        ➕ Add Another Project
-      </button>
+      <button type="button" class="add-btn-dashed"
+        onclick="addProject()">➕ Add Another Project</button>
     </div>
 
-    <!-- Internships -->
+    <!-- ── INTERNSHIPS ── -->
     <div class="section">
       <h2>💼 Internship / Experience</h2>
       <div id="internshipContainer">
-        <div class="dynamic-item" id="internship_1">
-          <div class="dynamic-header">
-            <label>Internship 1</label>
+        <div class="dynamic-card" id="internship_1">
+          <div class="card-header">
+            <span class="card-label">Internship 1</span>
           </div>
-          <input type="text" name="internship_company[]"
-            placeholder="Company Name e.g. XYZ Tech"/>
-          <input type="text" name="internship_role[]"
-            placeholder="Role e.g. Web Development Intern"/>
-          <input type="text" name="internship_duration[]"
-            placeholder="Duration e.g. June 2024 - August 2024"/>
-          <textarea name="internship_desc[]" rows="2"
-            placeholder="What did you do there?"></textarea>
+          <div class="grid2">
+            <div class="field">
+              <label>Company Name</label>
+              <input type="text" name="internship_company[]"
+                placeholder="e.g. XYZ Technologies"/>
+            </div>
+            <div class="field">
+              <label>Your Role</label>
+              <input type="text" name="internship_role[]"
+                placeholder="e.g. Python Developer Intern"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Duration</label>
+            <input type="text" name="internship_duration[]"
+              placeholder="e.g. June 2024 - August 2024"/>
+          </div>
+          <div class="field">
+            <label>What did you do?</label>
+            <textarea name="internship_desc[]" rows="2"
+              placeholder="e.g. Built REST APIs, worked on frontend..."></textarea>
+          </div>
         </div>
       </div>
-      <button type="button" class="add-more-btn" onclick="addInternship()">
-        ➕ Add Another Internship
-      </button>
+      <button type="button" class="add-btn-dashed"
+        onclick="addInternship()">➕ Add Another Internship</button>
     </div>
 
-    <!-- Achievements -->
+    <!-- ── ACHIEVEMENTS ── -->
     <div class="section">
       <h2>🏆 Achievements & Activities</h2>
-      <div class="form-group">
+      <div class="field">
         <label>Certifications, Clubs, Awards</label>
         <textarea name="achievements" rows="3"
-          placeholder="e.g. Google Python Certificate, NSS Volunteer, Hackathon Winner">
-        </textarea>
+          placeholder="e.g. Google Python Certificate, NSS Volunteer, Hackathon Winner"></textarea>
       </div>
     </div>
 
-    <!-- Extra Section -->
+    <!-- ── EXTRA ── -->
     <div class="section">
-      <h2>✨ Anything Extra</h2>
-      <div class="form-group">
-        <label>Additional Information (optional)</label>
+      <h2>✨ Additional Information</h2>
+      <div class="field">
+        <label>Anything else you want on your resume</label>
         <textarea name="extra" rows="3"
-          placeholder="e.g. Languages known, hobbies, volunteer work, publications...">
-        </textarea>
+          placeholder="e.g. Languages known: Kannada, Hindi, English. Hobbies: Photography, Blogging"></textarea>
       </div>
     </div>
 
-    <!-- Job Target -->
+    <!-- ── JOB TARGET ── -->
     <div class="section">
       <h2>🎯 Job Target</h2>
-      <p class="section-hint">
-        Select from common roles below or add your own custom roles!
-      </p>
+      <p class="hint">Select from list or add your own roles</p>
 
-      <!-- Dropdown -->
-      <div class="form-group">
-        <label>Pick a Common Role</label>
+      <div class="field">
+        <label>Select a Common Role</label>
         <select id="jobDropdown" onchange="addFromDropdown()">
-          <option value="">-- Select a role --</option>
+          <option value="">-- Choose a role --</option>
           <optgroup label="🖥️ Tech Roles">
             <option>Python Developer Intern</option>
             <option>Web Developer Intern</option>
@@ -237,24 +271,21 @@
         </select>
       </div>
 
-      <!-- Custom Role Input -->
-      <div class="form-group">
-        <label>Or Add Custom Role</label>
-        <div class="tag-input-row">
+      <div class="field">
+        <label>Or Type a Custom Role</label>
+        <div class="tag-row">
           <input type="text" id="jobInput"
-            placeholder="Type your own role and press ➕"/>
-          <button type="button" class="add-btn"
+            placeholder="e.g. Data Analyst Intern"/>
+          <button type="button" class="icon-btn"
             onclick="addCustomJob()">➕</button>
         </div>
       </div>
 
-      <!-- Selected Job Tags -->
-      <div class="tag-box" id="jobTags"></div>
+      <div id="jobTags" class="tag-box" style="margin-top:10px;"></div>
       <input type="hidden" name="job_roles" id="jobRolesHidden"/>
-
     </div>
 
-    <!-- Submit -->
+    <!-- ── SUBMIT ── -->
     <div class="submit-area">
       <button type="submit" onclick="prepareSubmit()">
         ⚡ Generate My Resume (PDF)
@@ -263,7 +294,7 @@
 
   </form>
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <div class="footer">
     <p>Built with ❤️ by <strong>Sinchana Hegde</strong></p>
     <p>AI Resume Generator © 2026 | Powered by Groq AI & Flask</p>
@@ -271,184 +302,182 @@
 
 </div>
 
+<!-- ══════════ JAVASCRIPT ══════════ -->
 <script>
-  // ── SKILLS TAGS ──
-  let skills = [];
 
-  function addSkill() {
-    const input = document.getElementById('skillInput');
-    const skill = input.value.trim();
-    if (!skill || skills.includes(skill)) { input.value=''; return; }
-    skills.push(skill);
-    renderSkillTags();
-    input.value = '';
-    updateSkillsHidden();
-  }
+// ── PHOTO PREVIEW ──
+function previewPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview     = document.getElementById('photoPreview');
+    const placeholder = document.getElementById('photoPlaceholder');
+    preview.src           = e.target.result;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
 
-  function removeSkill(skill) {
-    skills = skills.filter(s => s !== skill);
-    renderSkillTags();
-    updateSkillsHidden();
-  }
-
-  function renderSkillTags() {
-    document.getElementById('skillTags').innerHTML =
-      skills.map(skill => `
-        <span class="tag">
-          ${skill}
-          <button type="button"
-            onclick="removeSkill('${skill}')">&times;</button>
-        </span>
-      `).join('');
-  }
-
-  function updateSkillsHidden() {
-    document.getElementById('skillsHidden').value = skills.join(', ');
-  }
-
-  document.getElementById('skillInput')
-    .addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') { e.preventDefault(); addSkill(); }
+// ── SKILLS ──
+let skills = [];
+function addSkill() {
+  const input = document.getElementById('skillInput');
+  const val   = input.value.trim();
+  if (!val || skills.includes(val)) { input.value=''; return; }
+  skills.push(val);
+  renderTags('skillTags', skills, removeSkill);
+  updateHidden('skillsHidden', skills);
+  input.value = '';
+}
+function removeSkill(s) {
+  skills = skills.filter(x => x !== s);
+  renderTags('skillTags', skills, removeSkill);
+  updateHidden('skillsHidden', skills);
+}
+document.getElementById('skillInput')
+  .addEventListener('keypress', e => {
+    if (e.key==='Enter') { e.preventDefault(); addSkill(); }
   });
 
-  // ── JOB ROLES TAGS ──
-  let jobRoles = [];
-
-  function addFromDropdown() {
-    const dropdown = document.getElementById('jobDropdown');
-    const role = dropdown.value.trim();
-    if (!role || jobRoles.includes(role)) {
-      dropdown.value = '';
-      return;
-    }
-    jobRoles.push(role);
-    renderJobTags();
-    dropdown.value = '';
-    updateJobRolesHidden();
-  }
-
-  function addCustomJob() {
-    const input = document.getElementById('jobInput');
-    const role  = input.value.trim();
-    if (!role || jobRoles.includes(role)) { input.value=''; return; }
-    jobRoles.push(role);
-    renderJobTags();
-    input.value = '';
-    updateJobRolesHidden();
-  }
-
-  function removeJob(role) {
-    jobRoles = jobRoles.filter(r => r !== role);
-    renderJobTags();
-    updateJobRolesHidden();
-  }
-
-  function renderJobTags() {
-    document.getElementById('jobTags').innerHTML =
-      jobRoles.map(role => `
-        <span class="tag">
-          ${role}
-          <button type="button"
-            onclick="removeJob('${role}')">&times;</button>
-        </span>
-      `).join('');
-  }
-
-  function updateJobRolesHidden() {
-    document.getElementById('jobRolesHidden').value = jobRoles.join(', ');
-  }
-
-  document.getElementById('jobInput')
-    .addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') { e.preventDefault(); addCustomJob(); }
+// ── JOB ROLES ──
+let jobRoles = [];
+function addFromDropdown() {
+  const dd  = document.getElementById('jobDropdown');
+  const val = dd.value.trim();
+  if (!val || jobRoles.includes(val)) { dd.value=''; return; }
+  jobRoles.push(val);
+  renderTags('jobTags', jobRoles, removeJob);
+  updateHidden('jobRolesHidden', jobRoles);
+  dd.value = '';
+}
+function addCustomJob() {
+  const input = document.getElementById('jobInput');
+  const val   = input.value.trim();
+  if (!val || jobRoles.includes(val)) { input.value=''; return; }
+  jobRoles.push(val);
+  renderTags('jobTags', jobRoles, removeJob);
+  updateHidden('jobRolesHidden', jobRoles);
+  input.value = '';
+}
+function removeJob(r) {
+  jobRoles = jobRoles.filter(x => x !== r);
+  renderTags('jobTags', jobRoles, removeJob);
+  updateHidden('jobRolesHidden', jobRoles);
+}
+document.getElementById('jobInput')
+  .addEventListener('keypress', e => {
+    if (e.key==='Enter') { e.preventDefault(); addCustomJob(); }
   });
 
-  // ── POST GRADUATION TOGGLE ──
-  let pgVisible = false;
+// ── SHARED TAG RENDERER ──
+function renderTags(containerId, arr, removeFn) {
+  document.getElementById(containerId).innerHTML =
+    arr.map(item => `
+      <span class="tag">
+        ${item}
+        <button type="button"
+          onclick="${removeFn.name}('${item}')">&times;</button>
+      </span>
+    `).join('');
+}
+function updateHidden(id, arr) {
+  document.getElementById(id).value = arr.join(', ');
+}
 
-  function togglePG() {
-    pgVisible = !pgVisible;
-    const section = document.getElementById('pgSection');
-    const btn     = document.getElementById('pgToggleBtn');
-    if (pgVisible) {
-      section.style.display = 'block';
-      btn.textContent = '➖ Remove Post Graduation';
-      btn.style.borderColor = '#ff5252';
-      btn.style.color = '#ff5252';
-    } else {
-      section.style.display = 'none';
-      btn.textContent = '➕ Add Post Graduation (optional)';
-      btn.style.borderColor = '#667eea';
-      btn.style.color = '#667eea';
-    }
-  }
+// ── POST GRADUATION TOGGLE ──
+let pgOpen = false;
+function togglePG() {
+  pgOpen = !pgOpen;
+  const card = document.getElementById('pgCard');
+  const btn  = document.getElementById('pgBtn');
+  card.style.display = pgOpen ? 'block' : 'none';
+  btn.textContent    = pgOpen
+    ? '➖ Remove Post Graduation'
+    : '➕ Add Post Graduation (optional)';
+  btn.classList.toggle('btn-danger', pgOpen);
+}
 
-  // ── DYNAMIC PROJECTS ──
-  let projectCount = 1;
-
-  function addProject() {
-    projectCount++;
-    const container = document.getElementById('projectsContainer');
-    const div = document.createElement('div');
-    div.className = 'dynamic-item';
-    div.id = `project_${projectCount}`;
-    div.innerHTML = `
-      <div class="dynamic-header">
-        <label>Project ${projectCount}</label>
-        <button type="button" class="remove-btn"
-          onclick="removeItem('project_${projectCount}')">
-          ✖ Remove
-        </button>
-      </div>
-      <input type="text" name="project_title[]"
-        placeholder="Project Name"/>
+// ── DYNAMIC PROJECTS ──
+let pCount = 1;
+function addProject() {
+  pCount++;
+  const c   = document.getElementById('projectsContainer');
+  const div = document.createElement('div');
+  div.className = 'dynamic-card';
+  div.id = `project_${pCount}`;
+  div.innerHTML = `
+    <div class="card-header">
+      <span class="card-label">Project ${pCount}</span>
+      <button type="button" class="remove-btn"
+        onclick="removeEl('project_${pCount}')">✖ Remove</button>
+    </div>
+    <div class="field">
+      <label>Project Name</label>
+      <input type="text" name="project_title[]" placeholder="Project Name"/>
+    </div>
+    <div class="field">
+      <label>What does it do?</label>
       <textarea name="project_desc[]" rows="2"
-        placeholder="What does it do?"></textarea>
-    `;
-    container.appendChild(div);
-  }
+        placeholder="Brief description"></textarea>
+    </div>
+  `;
+  c.appendChild(div);
+}
 
-  // ── DYNAMIC INTERNSHIPS ──
-  let internshipCount = 1;
-
-  function addInternship() {
-    internshipCount++;
-    const container = document.getElementById('internshipContainer');
-    const div = document.createElement('div');
-    div.className = 'dynamic-item';
-    div.id = `internship_${internshipCount}`;
-    div.innerHTML = `
-      <div class="dynamic-header">
-        <label>Internship ${internshipCount}</label>
-        <button type="button" class="remove-btn"
-          onclick="removeItem('internship_${internshipCount}')">
-          ✖ Remove
-        </button>
+// ── DYNAMIC INTERNSHIPS ──
+let iCount = 1;
+function addInternship() {
+  iCount++;
+  const c   = document.getElementById('internshipContainer');
+  const div = document.createElement('div');
+  div.className = 'dynamic-card';
+  div.id = `internship_${iCount}`;
+  div.innerHTML = `
+    <div class="card-header">
+      <span class="card-label">Internship ${iCount}</span>
+      <button type="button" class="remove-btn"
+        onclick="removeEl('internship_${iCount}')">✖ Remove</button>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label>Company Name</label>
+        <input type="text" name="internship_company[]"
+          placeholder="Company Name"/>
       </div>
-      <input type="text" name="internship_company[]"
-        placeholder="Company Name"/>
-      <input type="text" name="internship_role[]"
-        placeholder="Role"/>
+      <div class="field">
+        <label>Your Role</label>
+        <input type="text" name="internship_role[]"
+          placeholder="Role"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Duration</label>
       <input type="text" name="internship_duration[]"
-        placeholder="Duration e.g. June - August 2024"/>
+        placeholder="e.g. June - August 2024"/>
+    </div>
+    <div class="field">
+      <label>What did you do?</label>
       <textarea name="internship_desc[]" rows="2"
-        placeholder="What did you do there?"></textarea>
-    `;
-    container.appendChild(div);
-  }
+        placeholder="Brief description"></textarea>
+    </div>
+  `;
+  c.appendChild(div);
+}
 
-  // ── REMOVE ITEM ──
-  function removeItem(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-  }
+// ── REMOVE ELEMENT ──
+function removeEl(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
 
-  // ── PREPARE SUBMIT ──
-  function prepareSubmit() {
-    updateSkillsHidden();
-    updateJobRolesHidden();
-  }
+// ── PREPARE SUBMIT ──
+function prepareSubmit() {
+  updateHidden('skillsHidden',   skills);
+  updateHidden('jobRolesHidden', jobRoles);
+}
+
 </script>
-
 </body>
-</html>  
+</html>

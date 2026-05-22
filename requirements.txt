@@ -3,3 +3,4 @@ groq
 reportlab
 python-dotenv
 gunicorn
+Pillow

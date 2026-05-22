@@ -1,382 +1,367 @@
-/* ── General Reset ── */
-* {
+/* ══ RESET ══ */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  padding: 30px 20px;
+  padding: 30px 16px;
 }
 
-/* ── Main Container ── */
+/* ══ CONTAINER ══ */
 .container {
-  max-width: 850px;
+  max-width: 860px;
   margin: 0 auto;
-  background: #ffffff;
+  background: #fff;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
   overflow: hidden;
 }
 
-/* ── Header ── */
+/* ══ HEADER ══ */
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
   text-align: center;
-  padding: 40px 30px;
+  padding: 40px 24px;
 }
+.header h1 { font-size: 2rem; margin-bottom: 8px; }
+.header p  { font-size: 0.95rem; opacity: 0.9; }
 
-.header h1 {
-  font-size: 2.2rem;
-  margin-bottom: 10px;
-  letter-spacing: 1px;
-}
-
-.header p {
-  font-size: 1rem;
-  opacity: 0.9;
-}
-
-/* ── Sections ── */
+/* ══ SECTION ══ */
 .section {
-  padding: 28px 40px;
+  padding: 28px 36px;
   border-bottom: 2px solid #f0f0f0;
 }
-
 .section h2 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   color: #667eea;
   margin-bottom: 18px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #667eea33;
+  border-bottom: 2px solid #e8ebff;
 }
 
-/* ── Grid Layout ── */
-.grid {
+/* ══ GRID ══ */
+.grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
-/* ── Form Elements ── */
-.form-group {
+/* ══ FIELD ══ */
+.field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   margin-bottom: 12px;
 }
-
-.form-group label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #444;
+.field label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #555;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
-
-.form-group input,
-.form-group textarea,
-.dynamic-item input,
-.dynamic-item textarea {
-  padding: 11px 15px;
+.field input,
+.field textarea,
+.field select {
+  padding: 10px 14px;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: #333;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  font-family: inherit;
   outline: none;
   width: 100%;
-  font-family: inherit;
-  margin-bottom: 8px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  background: #fff;
 }
-
-.form-group input:focus,
-.form-group textarea:focus,
-.dynamic-item input:focus,
-.dynamic-item textarea:focus {
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
 }
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #bbb;
+  font-size: 0.85rem;
+}
+textarea { resize: vertical; }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder,
-.dynamic-item input::placeholder,
-.dynamic-item textarea::placeholder {
+/* ══ PHOTO SECTION ══ */
+.photo-section {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.photo-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.photo-box {
+  width: 140px;
+  height: 140px;
+  border: 2px dashed #667eea;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9ff;
+  overflow: hidden;
+  transition: background 0.2s, border-color 0.2s;
+}
+.photo-box:hover {
+  background: #eef0ff;
+  border-color: #764ba2;
+}
+.photo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#photoPlaceholder {
+  text-align: center;
+  color: #667eea;
+}
+#photoPlaceholder .photo-icon { font-size: 2rem; }
+#photoPlaceholder p {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+#photoPlaceholder small {
+  font-size: 0.72rem;
   color: #aaa;
+}
+
+/* ══ EDUCATION CARDS ══ */
+.edu-card {
+  background: #f8f9ff;
+  border: 2px solid #e8ebff;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+.edu-card-title {
   font-size: 0.88rem;
+  font-weight: 700;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
 }
 
-textarea {
-  resize: vertical;
+/* ══ TOGGLE BUTTON ══ */
+.toggle-btn {
+  background: #fff;
+  color: #667eea;
+  border: 2px dashed #667eea;
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+.toggle-btn:hover {
+  background: #667eea;
+  color: #fff;
+}
+.toggle-btn.btn-danger {
+  border-color: #ff5252;
+  color: #ff5252;
+}
+.toggle-btn.btn-danger:hover {
+  background: #ff5252;
+  color: #fff;
 }
 
-/* ── Skill Tag System ── */
-.tag-input-container {
+/* ══ SKILL & JOB TAG SYSTEM ══ */
+.tag-wrapper {
   border: 2px solid #e0e0e0;
   border-radius: 10px;
   padding: 10px;
   background: #fafafa;
-  transition: border-color 0.3s;
+  transition: border-color 0.25s;
 }
-
-.tag-input-container:focus-within {
+.tag-wrapper:focus-within {
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
 }
-
 .tag-box {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 10px;
-  min-height: 10px;
+  margin-bottom: 8px;
+  min-height: 8px;
 }
-
 .tag {
   background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  color: #fff;
   padding: 5px 12px;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 6px;
-  font-weight: 500;
 }
-
 .tag button {
   background: none;
   border: none;
-  color: white;
-  cursor: pointer;
+  color: #fff;
   font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.8;
   line-height: 1;
   padding: 0;
-  opacity: 0.8;
-  transition: opacity 0.2s;
 }
+.tag button:hover { opacity: 1; }
 
-.tag button:hover {
-  opacity: 1;
-}
-
-.tag-input-row {
+.tag-row {
   display: flex;
   gap: 8px;
   align-items: center;
 }
-
-.tag-input-row input {
+.tag-row input {
   flex: 1;
-  border: 2px solid #e0e0e0 !important;
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
-  font-size: 0.9rem !important;
-  margin-bottom: 0 !important;
+  padding: 8px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
 }
+.tag-row input:focus { border-color: #667eea; }
 
-.add-btn {
+.icon-btn {
   background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 8px;
   padding: 8px 14px;
   font-size: 1rem;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  white-space: nowrap;
 }
-
-.add-btn:hover {
+.icon-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(102,126,234,0.4);
 }
 
-/* ── Dynamic Items (Projects & Internships) ── */
-.dynamic-item {
+/* ══ DYNAMIC CARDS ══ */
+.dynamic-card {
   background: #f8f9ff;
   border: 2px solid #e8ebff;
   border-radius: 12px;
   padding: 16px;
-  margin-bottom: 14px;
-  transition: border-color 0.3s;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
 }
-
-.dynamic-item:hover {
-  border-color: #667eea;
-}
-
-.dynamic-header {
+.dynamic-card:hover { border-color: #667eea; }
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
-
-.dynamic-header label {
-  font-size: 0.9rem;
+.card-label {
+  font-size: 0.88rem;
   font-weight: 700;
   color: #667eea;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 .remove-btn {
   background: #ff5252;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 6px;
   padding: 4px 10px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s;
 }
+.remove-btn:hover { background: #d32f2f; }
 
-.remove-btn:hover {
-  background: #d32f2f;
-  transform: translateY(-1px);
-}
-
-/* ── Add More Button ── */
-.add-more-btn {
-  background: white;
+.add-btn-dashed {
+  width: 100%;
+  padding: 10px;
+  background: #fff;
   color: #667eea;
   border: 2px dashed #667eea;
   border-radius: 10px;
-  padding: 10px 20px;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
   cursor: pointer;
-  width: 100%;
-  transition: background 0.2s, color 0.2s, transform 0.2s;
-  margin-top: 4px;
+  transition: all 0.2s;
+  margin-top: 2px;
 }
-
-.add-more-btn:hover {
+.add-btn-dashed:hover {
   background: #667eea;
-  color: white;
-  transform: translateY(-2px);
+  color: #fff;
 }
 
-/* ── Submit Button ── */
+/* ══ HINT TEXT ══ */
+.hint {
+  font-size: 0.82rem;
+  color: #999;
+  font-style: italic;
+  margin-bottom: 14px;
+}
+
+/* ══ SUBMIT ══ */
 .submit-area {
-  padding: 35px 40px;
+  padding: 32px 36px;
   text-align: center;
 }
-
 .submit-area button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
   border: none;
-  padding: 16px 50px;
+  padding: 15px 50px;
   font-size: 1.1rem;
   font-weight: 700;
   border-radius: 50px;
   cursor: pointer;
   letter-spacing: 1px;
+  box-shadow: 0 5px 20px rgba(102,126,234,0.45);
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
 }
-
 .submit-area button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 10px 30px rgba(102,126,234,0.55);
 }
+.submit-area button:active { transform: translateY(0); }
 
-.submit-area button:active {
-  transform: translateY(0px);
-}
-
-/* ── Footer ── */
+/* ══ FOOTER ══ */
 .footer {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
   text-align: center;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
   font-size: 0.85rem;
+  line-height: 1.8;
 }
+.footer strong { font-weight: 700; }
 
-.footer strong {
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-/* ── Responsive Mobile ── */
+/* ══ RESPONSIVE ══ */
 @media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .header h1 {
-    font-size: 1.6rem;
-  }
-
-  .section {
-    padding: 20px;
-  }
-
-  .submit-area {
-    padding: 25px 20px;
-  }
-
-  .tag-input-row {
-    flex-direction: column;
-  }
-
-  .add-btn {
-    width: 100%;
-  }
-} 
-/* ── Education Blocks ── */
-.edu-block {
-  background: #f8f9ff;
-  border: 2px solid #e8ebff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 14px;
+  .grid2 { grid-template-columns: 1fr; }
+  .section { padding: 20px 18px; }
+  .header h1 { font-size: 1.5rem; }
+  .tag-row { flex-direction: column; }
+  .icon-btn { width: 100%; }
 }
-
-.edu-block-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #667eea;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
-}
-
-.pg-toggle-area {
-  margin-top: 8px;
-}
-
-/* ── Section Hint ── */
-.section-hint {
-  font-size: 0.85rem;
-  color: #888;
-  margin-bottom: 14px;
-  font-style: italic;
-}
-
-/* ── Job Dropdown ── */
-select {
-  padding: 11px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  color: #333;
-  width: 100%;
-  font-family: inherit;
-  outline: none;
-  cursor: pointer;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  background: white;
-}
-
-select:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-} 

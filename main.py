@@ -7,20 +7,20 @@ import os
 app = Flask(__name__)
 
 OUTPUT_FOLDER = "generated_resumes"
+UPLOAD_FOLDER = "uploaded_photos"
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
-# ── HOME PAGE ──
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# ── GENERATE RESUME ──
 @app.route("/generate", methods=["POST"])
 def generate():
 
-    # ── Personal Info ──
+    # Personal Info
     student_data = {
         "name"         : request.form.get("name", "").strip(),
         "email"        : request.form.get("email", "").strip(),
@@ -42,32 +42,35 @@ def generate():
         "job_roles"    : request.form.get("job_roles", "").strip(),
     }
 
-    # ── Dynamic Projects ──
-    project_titles = request.form.getlist("project_title[]")
-    project_descs  = request.form.getlist("project_desc[]")
+    # Photo
+    photo_path = None
+    if "photo" in request.files:
+        photo = request.files["photo"]
+        if photo and photo.filename != "":
+            ext        = os.path.splitext(photo.filename)[1].lower()
+            safe_name  = student_data["name"].replace(" ", "_")
+            photo_path = os.path.join(UPLOAD_FOLDER, f"{safe_name}_photo{ext}")
+            photo.save(photo_path)
+    student_data["photo_path"] = photo_path
+
+    # Projects
+    p_titles = request.form.getlist("project_title[]")
+    p_descs  = request.form.getlist("project_desc[]")
     projects = []
-    for title, desc in zip(project_titles, project_descs):
+    for title, desc in zip(p_titles, p_descs):
         title = title.strip()
-        desc  = desc.strip()
         if title:
-            projects.append({
-                "title": title,
-                "desc" : desc
-            })
+            projects.append({"title": title, "desc": desc.strip()})
     student_data["projects"] = projects
 
-    # ── Dynamic Internships ──
-    internship_companies = request.form.getlist("internship_company[]")
-    internship_roles     = request.form.getlist("internship_role[]")
-    internship_durations = request.form.getlist("internship_duration[]")
-    internship_descs     = request.form.getlist("internship_desc[]")
+    # Internships
+    i_companies = request.form.getlist("internship_company[]")
+    i_roles     = request.form.getlist("internship_role[]")
+    i_durations = request.form.getlist("internship_duration[]")
+    i_descs     = request.form.getlist("internship_desc[]")
     internships = []
     for company, role, duration, desc in zip(
-        internship_companies,
-        internship_roles,
-        internship_durations,
-        internship_descs
-    ):
+            i_companies, i_roles, i_durations, i_descs):
         company = company.strip()
         if company:
             internships.append({
@@ -78,39 +81,27 @@ def generate():
             })
     student_data["internships"] = internships
 
-    # ── Send to AI ──
-    print("🤖 Sending data to Groq AI...")
+    # AI
+    print("🤖 Sending to Groq AI...")
     ai_content = generate_resume_content(student_data)
-
     if not ai_content:
-        return """
-            <h2 style='color:red; font-family:sans-serif;
-            text-align:center; margin-top:50px;'>
-            ❌ AI generation failed. Please check your API key.
-            </h2>
-        """, 500
+        return "<h2 style='color:red;text-align:center;margin-top:60px'>❌ AI failed. Check API key.</h2>", 500
 
-    # ── Build PDF ──
-    print("📄 Building PDF resume...")
-    student_name = student_data.get("name", "resume").replace(" ", "_")
-    output_path  = os.path.join(
-        OUTPUT_FOLDER, f"{student_name}_resume.pdf"
-    )
-    build_resume_pdf(student_data, ai_content, output_path)
+    # PDF
+    print("📄 Building PDF...")
+    safe = student_data.get("name","resume").replace(" ","_")
+    out  = os.path.join(OUTPUT_FOLDER, f"{safe}_resume.pdf")
+    build_resume_pdf(student_data, ai_content, out)
 
-    # ── Send to Browser ──
-    print("✅ Resume ready!")
+    print("✅ Done!")
     return send_file(
-        output_path,
+        out,
         as_attachment=True,
-        download_name=f"{student_name}_resume.pdf",
+        download_name=f"{safe}_resume.pdf",
         mimetype="application/pdf"
     )
 
 
-# ── RUN ──
 if __name__ == "__main__":
-    print("🚀 Starting AI Resume Generator...")
-    print("🌐 Open: http://127.0.0.1:5000")
-    print("⏹️  Press CTRL+C to stop\n")
-    app.run(debug=True) 
+    print("🚀 http://127.0.0.1:5000")
+    app.run(debug=True)

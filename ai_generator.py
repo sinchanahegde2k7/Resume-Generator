@@ -1,168 +1,153 @@
 # ai_generator.py
 from groq import Groq
 import os
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+
+def clean(text):
+    """Remove all bracket labels and markdown bold"""
+    text = re.sub(r'\[.*?\]', '', text)
+    text = text.replace("**", "")
+    lines = [
+        l.strip() for l in text.strip().split('\n')
+        if l.strip() and l.strip().lower() not in [
+            'professional summary','skills','projects',
+            'internships','achievements','extra',
+            'additional information','none','n/a'
+        ]
+    ]
+    return '\n'.join(lines)
+
+
 def generate_resume_content(data):
 
-    # ── Format Projects ──
-    projects_text = ""
-    for i, project in enumerate(data.get("projects", []), 1):
-        projects_text += f"""
-    Project {i}: {project.get('title', '')}
-    Description: {project.get('desc', '')}
-    """
+    # Format projects
+    proj_text = ""
+    for i, p in enumerate(data.get("projects", []), 1):
+        proj_text += f"\n  Project {i}: {p.get('title','')}\n  About: {p.get('desc','')}\n"
 
-    # ── Format Internships ──
-    internships_text = ""
-    for i, intern in enumerate(data.get("internships", []), 1):
-        internships_text += f"""
-    Internship {i}:
-    Company : {intern.get('company', '')}
-    Role    : {intern.get('role', '')}
-    Duration: {intern.get('duration', '')}
-    Details : {intern.get('desc', '')}
-    """
+    # Format internships
+    intern_text = ""
+    for i, n in enumerate(data.get("internships", []), 1):
+        intern_text += f"""
+  Internship {i}:
+  Company : {n.get('company','')}
+  Role    : {n.get('role','')}
+  Duration: {n.get('duration','')}
+  Details : {n.get('desc','')}
+"""
 
-    # ── Format PG ──
+    # PG text
     pg_text = ""
     if data.get("pg_degree"):
-        pg_text = f"""
-    PG Degree  : {data.get('pg_degree')}
-    PG College : {data.get('pg_college')}
-    PG Year    : {data.get('pg_year')}
-    PG CGPA    : {data.get('pg_percentage')}
-    """
+        pg_text = f"Post Grad: {data['pg_degree']} from {data.get('pg_college','')} ({data.get('pg_year','')}), CGPA: {data.get('pg_percentage','')}"
 
-    # ── Build Prompt ──
     prompt = f"""
-    You are a professional resume writer for students.
-    Generate polished resume content based on the details below.
+You are an expert professional resume writer for students in India.
+Write polished, impressive resume content based on the student details below.
 
-    ── STUDENT DETAILS ──
-    Name         : {data.get('name')}
-    Email        : {data.get('email')}
-    Phone        : {data.get('phone')}
-    Location     : {data.get('location')}
-    LinkedIn     : {data.get('linkedin')}
-    GitHub       : {data.get('github')}
-    Degree       : {data.get('degree')}
-    College      : {data.get('college')}
-    Grad Year    : {data.get('grad_year')}
-    CGPA         : {data.get('percentage')}
-    {f"Post Graduation: {pg_text}" if pg_text else ""}
-    Skills       : {data.get('skills')}
-    Achievements : {data.get('achievements')}
-    Extra Info   : {data.get('extra')}
-    Job Targets  : {data.get('job_roles')}
+STUDENT DETAILS:
+Name        : {data.get('name')}
+Location    : {data.get('location')}
+Degree      : {data.get('degree')} from {data.get('college')} ({data.get('grad_year')}), CGPA: {data.get('percentage')}
+{pg_text}
+Skills      : {data.get('skills')}
+Achievements: {data.get('achievements')}
+Extra Info  : {data.get('extra')}
+Job Targets : {data.get('job_roles')}
 
-    ── PROJECTS ──
-    {projects_text if projects_text else "No projects provided"}
+PROJECTS:
+{proj_text if proj_text else "None provided"}
 
-    ── INTERNSHIPS ──
-    {internships_text if internships_text else "No internships provided"}
+INTERNSHIPS:
+{intern_text if intern_text else "None provided"}
 
-    ── WHAT TO GENERATE ──
+INSTRUCTIONS:
+Write exactly 6 sections separated by ---SECTION--- divider.
+Each section must contain ONLY the content, NO labels, NO headings, NO brackets.
 
-    1. PROFESSIONAL SUMMARY
-       - 3-4 sentences tailored to ALL job roles they are targeting
-       - Highlight strongest points
+Section order:
+1. Professional Summary — 3 sentences, tailored to job targets
+2. Skills — comma separated, clean list
+3. Project descriptions — for each project write 2-3 bullet points starting with action verbs. Separate projects with [PROJECT_BREAK]
+4. Internship descriptions — for each internship 2-3 bullet points. Write SKIP if none. Separate with [INTERN_BREAK]
+5. Achievements — bullet points, professional
+6. Extra info — polish it. Write SKIP if none provided.
 
-    2. SKILLS
-       - Clean comma separated list
-       - Group if possible (Technical: ... | Soft Skills: ...)
+RULES:
+- NO bracket labels like [Professional Summary] anywhere
+- NO section headings inside the content
+- NO markdown bold like **text**
+- Start writing content directly
+- Use strong action verbs: Developed, Built, Designed, Implemented, Managed
 
-    3. PROJECTS
-       - For EACH project write 2-3 bullet points
-       - Use action verbs (Developed, Built, Designed, Implemented)
-       - Separate each project with [PROJECT_BREAK]
-
-    4. INTERNSHIPS
-       - For EACH internship write 2-3 bullet points
-       - Use action verbs
-       - Separate each with [INTERN_BREAK]
-       - Write NONE if no internships
-
-    5. ACHIEVEMENTS
-       - Clean bullet points
-       - Professional language
-
-    6. EXTRA SECTION
-       - Polish the extra info provided
-       - Write NONE if nothing provided
-
-    ── STRICT RULES ──
-    - Do NOT add fake information
-    - Do NOT include section headers
-    - Use action verbs always
-    - Separate sections with: ---SECTION---
-
-    ── OUTPUT FORMAT ──
-    [Professional Summary]
-    ---SECTION---
-    [Skills]
-    ---SECTION---
-    [Projects]
-    ---SECTION---
-    [Internships]
-    ---SECTION---
-    [Achievements]
-    ---SECTION---
-    [Extra]
-    """
+OUTPUT FORMAT — follow exactly:
+<summary text here>
+---SECTION---
+<skills text here>
+---SECTION---
+<project descriptions here>
+---SECTION---
+<internship descriptions here>
+---SECTION---
+<achievements here>
+---SECTION---
+<extra info here>
+"""
 
     try:
-        response = client.chat.completions.create(
+        resp = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[
                 {
-                    "role"   : "system",
-                    "content": "You are a professional resume writer. Always follow the exact output format. Never add extra text outside the format."
+                    "role": "system",
+                    "content": "You are a professional resume writer. Output ONLY the 6 sections separated by ---SECTION---. No labels, no brackets, no headings inside content."
                 },
                 {
-                    "role"   : "user",
+                    "role": "user",
                     "content": prompt
                 }
             ],
             max_tokens=2000,
-            temperature=0.7,
+            temperature=0.6,
         )
 
-        raw_text = response.choices[0].message.content
-        sections = raw_text.split("---SECTION---")
-        sections = [s.strip() for s in sections]
+        raw      = resp.choices[0].message.content
+        sections = [clean(s) for s in raw.split("---SECTION---")]
 
-        # ── Parse Projects ──
-        projects_raw = sections[2] if len(sections) > 2 else ""
-        project_descriptions = []
-        for block in projects_raw.split("[PROJECT_BREAK]"):
-            block = block.strip()
-            if block:
-                project_descriptions.append(block)
+        # Parse project descriptions
+        proj_raw  = sections[2] if len(sections) > 2 else ""
+        proj_desc = [
+            b.strip() for b in proj_raw.split("[PROJECT_BREAK]")
+            if b.strip()
+        ]
 
-        # ── Parse Internships ──
-        internships_raw = sections[3] if len(sections) > 3 else ""
-        internship_descriptions = []
-        if internships_raw.strip().upper() != "NONE":
-            for block in internships_raw.split("[INTERN_BREAK]"):
-                block = block.strip()
-                if block:
-                    internship_descriptions.append(block)
+        # Parse internship descriptions
+        intern_raw  = sections[3] if len(sections) > 3 else ""
+        intern_desc = []
+        if intern_raw.strip().upper() not in ["SKIP", "NONE", ""]:
+            intern_desc = [
+                b.strip() for b in intern_raw.split("[INTERN_BREAK]")
+                if b.strip()
+            ]
 
-        result = {
+        extra = sections[5] if len(sections) > 5 else ""
+        if extra.strip().upper() in ["SKIP", "NONE"]:
+            extra = ""
+
+        return {
             "summary"                : sections[0] if len(sections) > 0 else "",
             "skills"                 : sections[1] if len(sections) > 1 else "",
-            "project_descriptions"   : project_descriptions,
-            "internship_descriptions": internship_descriptions,
+            "project_descriptions"   : proj_desc,
+            "internship_descriptions": intern_desc,
             "achievements"           : sections[4] if len(sections) > 4 else "",
-            "extra"                  : sections[5] if len(sections) > 5 else "",
+            "extra"                  : extra,
         }
-
-        return result
 
     except Exception as e:
         print(f"AI Error: {e}")
-        return None 
+        return None
