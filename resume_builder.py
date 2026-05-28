@@ -5,7 +5,8 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph,
-    Spacer, HRFlowable, Table, TableStyle
+    Spacer, HRFlowable, Table, TableStyle,
+    KeepInFrame
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
 from reportlab.platypus import Image as RLImage
@@ -24,8 +25,8 @@ def build_resume_pdf(student_data, ai_content, output_path):
 
     doc = SimpleDocTemplate(
         output_path, pagesize=A4,
-        rightMargin=12*mm, leftMargin=12*mm,
-        topMargin=10*mm,   bottomMargin=12*mm,
+        rightMargin=10*mm, leftMargin=10*mm,
+        topMargin=8*mm,   bottomMargin=8*mm,
     )
 
     # ── Styles ──
@@ -33,9 +34,9 @@ def build_resume_pdf(student_data, ai_content, output_path):
         return ParagraphStyle(name, **kw)
 
     NAME = S("NAME",
-        fontSize=22, textColor=WHITE,
+        fontSize=20, textColor=WHITE,
         fontName="Helvetica-Bold",
-        alignment=TA_LEFT, leading=26)
+        alignment=TA_LEFT, leading=24)
 
     CONTACT = S("CONTACT",
         fontSize=8, textColor=WHITE,
@@ -48,14 +49,14 @@ def build_resume_pdf(student_data, ai_content, output_path):
         spaceBefore=10, spaceAfter=2)
 
     BODY = S("BODY",
-        fontSize=9, textColor=DARK,
+        fontSize=8.5, textColor=DARK,
         fontName="Helvetica",
-        leading=14, spaceAfter=2)
+        leading=13, spaceAfter=1)
 
     BULLET = S("BULLET",
-        fontSize=9, textColor=DARK,
+        fontSize=8.5, textColor=DARK,
         fontName="Helvetica",
-        leading=14, spaceAfter=2,
+        leading=13, spaceAfter=1,
         leftIndent=8)
 
     LABEL = S("LABEL",
@@ -159,7 +160,7 @@ def build_resume_pdf(student_data, ai_content, output_path):
         ("RIGHTPADDING",  (1,0), (1,-1),   8),
     ]))
     story.append(hdr)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 2))
 
     # ════════════════════════════════════
     # LEFT COLUMN
@@ -285,16 +286,22 @@ def build_resume_pdf(student_data, ai_content, output_path):
     R += [Spacer(1,1)] * (mx - len(R))
 
     # ── Two Column Table ──
-    body = Table([[L, R]], colWidths=[124*mm, 56*mm])
+    from reportlab.platypus import KeepInFrame
+    # ── Two Column Table ──
+    body = Table([[L, R]], colWidths=[126*mm, 54*mm])
     body.setStyle(TableStyle([
         ("VALIGN",       (0,0), (-1,-1), "TOP"),
         ("LEFTPADDING",  (0,0), (0,-1),  0),
-        ("RIGHTPADDING", (0,0), (0,-1),  10),
-        ("LEFTPADDING",  (1,0), (1,-1),  10),
+        ("RIGHTPADDING", (0,0), (0,-1),  8),
+        ("LEFTPADDING",  (1,0), (1,-1),  8),
         ("RIGHTPADDING", (1,0), (1,-1),  0),
         ("BACKGROUND",   (1,0), (1,-1),  ACCENT),
+        ("TOPPADDING",   (0,0), (-1,-1),  2),
+        ("BOTTOMPADDING",(0,0), (-1,-1),  2),
     ]))
     story.append(body)
 
     doc.build(story)
     return output_path
+
+    
