@@ -212,7 +212,7 @@ def build_resume_pdf(student_data, ai_content, output_path):
     # Extra
     extra = ai_content.get("extra", "").strip()
     if extra:
-        L += sec("Additional Information")
+        L += sec("Extracurricular Activities")
         L += bullets(extra)
         L.append(Spacer(1, 4))
 
